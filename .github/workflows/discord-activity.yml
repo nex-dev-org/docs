@@ -57,14 +57,16 @@ jobs:
           was posted. See .github/README-discord-activity.md for setup."
 
       # Derived from repo + run id, so sibling repos pushed together land in
-      # different slots while a single push stays near-instant. Bounded at 14s,
-      # which keeps the job under the one-minute billing round-up.
+      # different slots while a single push stays near-instant. 40 slots across
+      # ~18 repos keeps roughly one post per second, well inside Discord's
+      # 5-per-2s webhook allowance, and still leaves the job under the
+      # one-minute billing round-up.
       - name: Stagger to avoid a webhook burst
         if: env.WEBHOOK_URL != ''
         run: |
           slot=$(printf '%s%s' "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" \
             | cksum | cut -d' ' -f1)
-          slot=$(( slot % 15 ))
+          slot=$(( slot % 40 ))
           echo "Waiting ${slot}s before posting."
           sleep "$slot"
 
@@ -104,12 +106,17 @@ jobs:
           use-sender-avatar: true
           highlight-first-time-contributors: true
 
+      # Jittered, not fixed: a flat backoff would just re-collide the same set
+      # of repos that collided the first time.
       - name: Back off before retry
         if: env.WEBHOOK_URL != '' && steps.notify.outcome == 'failure'
         run: |
+          back=$(printf '%s%s-retry' "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" \
+            | cksum | cut -d' ' -f1)
+          back=$(( 12 + back % 18 ))
           echo "::warning title=Discord post failed::First attempt failed \
-          (usually a 429). Retrying once."
-          sleep 8
+          (usually a 429). Retrying in ${back}s."
+          sleep "$back"
 
       # Inputs are duplicated verbatim because GitHub Actions supports neither
       # YAML anchors nor step-level retry. Keep the two blocks in sync.

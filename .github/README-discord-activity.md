@@ -101,15 +101,24 @@ cards would simply be lost.
 
 The workflow handles this in two steps:
 
-1. **Stagger** — each run waits `hash(repo + run_id) % 15` seconds before
-   posting, so sibling repos land in different slots. A single push still posts
-   almost immediately, and the delay stays inside the one-minute billing
+1. **Stagger** — each run waits `hash(repo + run_id) % 40` seconds before
+   posting, so sibling repos land in different slots. Forty slots across ~18
+   repos is roughly one post per second, comfortably inside Discord's
+   allowance. The wait still leaves the job under the one-minute billing
    round-up, so it costs nothing extra.
-2. **Retry** — the post is `continue-on-error`, and on failure the job backs off
-   8 seconds and posts once more. Only if *both* attempts fail does the run go
-   red, via the final `Report result` step.
+2. **Retry** — the post is `continue-on-error`, and on failure the job backs
+   off a *jittered* 12–29 seconds and posts once more. The jitter matters: a
+   flat backoff would simply re-collide the same repos that collided the first
+   time. Only if *both* attempts fail does the run go red, via the final
+   `Report result` step.
 
-If you ever see runs failing on 429 despite this, raise the stagger modulus.
+An earlier version used a 15-slot stagger and a flat 8-second backoff; pushing
+all 18 repos at once still lost one card to a 429, which is what these numbers
+were widened to fix.
+
+If you ever see runs failing on 429 despite this, raise the stagger modulus —
+but note that going far past 60 seconds pushes private-repo jobs into a second
+billable minute.
 
 ## Silencing a commit
 
