@@ -5,7 +5,7 @@ name: Discord activity log
 # This is the *development* feed and is deliberately separate from the release
 # announcement (`release-discord.yml`), which uses the NEX.dev bot token and
 # targets the public announcements channel. This one uses a plain webhook and
-# should point at an internal dev channel.
+# should point at the shared dev channel.
 #
 # Setup — see .github/README-discord-activity.md. These are *repository*-level,
 # not org-level: nex-dev-org is on GitHub Free, where private repos cannot read
@@ -17,6 +17,12 @@ name: Discord activity log
 # The job never checks out the repository and holds no GITHUB_TOKEN
 # permissions, which is what makes `pull_request_target` safe here: it only
 # reads the event payload and never executes contributor code.
+#
+# Rate limiting: every repo in the org posts to one webhook, so a batch release
+# fires many runs at once and Discord answers 429 (5 requests / 2s per
+# webhook). Pipeline Pling posts once and does not retry, so a burst silently
+# loses cards. The stagger below spreads the burst and the retry catches
+# whatever still collides.
 
 on:
   push:
@@ -34,12 +40,12 @@ concurrency:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    # Forks do not carry org secrets, so the step would post nothing and fail
+    # Forks do not carry repo secrets, so the step would post nothing and fail
     # noisily. Skip cleanly instead.
     if: github.repository_owner == 'nex-dev-org'
     env:
       # The `secrets` context cannot be read from a step-level `if`, but a
-      # job-level `env` can, so hoist it here to gate on. Until the org secret
+      # job-level `env` can, so hoist it here to gate on. Until the secret
       # exists the run goes green-with-skip rather than red.
       WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     steps:
@@ -47,22 +53,30 @@ jobs:
         if: env.WEBHOOK_URL == ''
         run: |
           echo "::notice title=Discord activity log inactive::\
-          Org secret DISCORD_WEBHOOK_URL is not set, so nothing was posted. \
-          See .github/README-discord-activity.md for setup."
+          Secret DISCORD_WEBHOOK_URL is not set on this repository, so nothing \
+          was posted. See .github/README-discord-activity.md for setup."
+
+      # Derived from repo + run id, so sibling repos pushed together land in
+      # different slots while a single push stays near-instant. Bounded at 14s,
+      # which keeps the job under the one-minute billing round-up.
+      - name: Stagger to avoid a webhook burst
+        if: env.WEBHOOK_URL != ''
+        run: |
+          slot=$(printf '%s%s' "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" \
+            | cksum | cut -d' ' -f1)
+          slot=$(( slot % 15 ))
+          echo "Waiting ${slot}s before posting."
+          sleep "$slot"
 
       - name: Notify Discord
+        id: notify
         if: env.WEBHOOK_URL != ''
+        continue-on-error: true
         uses: Qbox-project/pipeline-pling@v1
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           thread-id: ${{ vars.DISCORD_THREAD_ID }}
-
-          # NEX.dev red, matching the release embeds. Overridable per repo with
-          # the EMBED_COLOR variable.
           accent-color: ${{ vars.EMBED_COLOR || '#FF3B3B' }}
-
-          # Default branches keep the brand colour; working branches get their
-          # own so the feed is scannable at a glance. First match wins.
           branch-colors: |
             main=#FF3B3B
             master=#FF3B3B
@@ -74,7 +88,6 @@ jobs:
             hotfix/**=#DC2626
             chore/**=#6B7280
             docs/**=#8B5CF6
-
           event-colors: |
             pull-request.opened=#1F883D
             pull-request.ready=#1F883D
@@ -85,13 +98,69 @@ jobs:
             issue.reopened=#1F883D
             issue.closed=#8250DF
             issue.not_planned=#6B7280
-
-          # Release automation pushes a version-bump commit on every release;
-          # `release-discord.yml` already announces those, so `!silent` in a
-          # commit body keeps the dev feed from echoing them.
           silent-keyword: '!silent'
           skip-bots: true
-
           use-repo-username: true
           use-sender-avatar: true
           highlight-first-time-contributors: true
+
+      - name: Back off before retry
+        if: env.WEBHOOK_URL != '' && steps.notify.outcome == 'failure'
+        run: |
+          echo "::warning title=Discord post failed::First attempt failed \
+          (usually a 429). Retrying once."
+          sleep 8
+
+      # Inputs are duplicated verbatim because GitHub Actions supports neither
+      # YAML anchors nor step-level retry. Keep the two blocks in sync.
+      - name: Notify Discord (retry)
+        id: retry
+        if: env.WEBHOOK_URL != '' && steps.notify.outcome == 'failure'
+        continue-on-error: true
+        uses: Qbox-project/pipeline-pling@v1
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          thread-id: ${{ vars.DISCORD_THREAD_ID }}
+          accent-color: ${{ vars.EMBED_COLOR || '#FF3B3B' }}
+          branch-colors: |
+            main=#FF3B3B
+            master=#FF3B3B
+            dev=#F59E0B
+            develop=#F59E0B
+            feat/**=#3B82F6
+            feature/**=#3B82F6
+            fix/**=#F97316
+            hotfix/**=#DC2626
+            chore/**=#6B7280
+            docs/**=#8B5CF6
+          event-colors: |
+            pull-request.opened=#1F883D
+            pull-request.ready=#1F883D
+            pull-request.draft=#6B7280
+            pull-request.merged=#8250DF
+            pull-request.closed=#CF222E
+            issue.opened=#1F883D
+            issue.reopened=#1F883D
+            issue.closed=#8250DF
+            issue.not_planned=#6B7280
+          silent-keyword: '!silent'
+          skip-bots: true
+          use-repo-username: true
+          use-sender-avatar: true
+          highlight-first-time-contributors: true
+
+      # `continue-on-error` above keeps a failed post from masking the outcome,
+      # so surface the real result here.
+      - name: Report result
+        if: env.WEBHOOK_URL != ''
+        run: |
+          if [ "${{ steps.notify.outcome }}" = "success" ]; then
+            echo "Posted on first attempt."
+          elif [ "${{ steps.retry.outcome }}" = "success" ]; then
+            echo "::notice title=Discord posted on retry::First attempt failed, \
+            retry succeeded."
+          else
+            echo "::error title=Discord post failed::Both attempts failed. \
+            Check the webhook URL and Discord rate limits."
+            exit 1
+          fi

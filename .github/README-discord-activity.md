@@ -91,6 +91,26 @@ the migration:
 Reusing the same Discord webhook for both is fine — it is the same channel and
 the same credential, just consumed two different ways.
 
+## Rate limiting
+
+Every repo posts to the same webhook, and Discord allows roughly 5 requests per
+2 seconds per webhook. Pushing a batch of repos at once — a multi-script
+release, for example — makes them all post simultaneously and Discord answers
+`429 Too Many Requests`. Pipeline Pling posts once and does not retry, so those
+cards would simply be lost.
+
+The workflow handles this in two steps:
+
+1. **Stagger** — each run waits `hash(repo + run_id) % 15` seconds before
+   posting, so sibling repos land in different slots. A single push still posts
+   almost immediately, and the delay stays inside the one-minute billing
+   round-up, so it costs nothing extra.
+2. **Retry** — the post is `continue-on-error`, and on failure the job backs off
+   8 seconds and posts once more. Only if *both* attempts fail does the run go
+   red, via the final `Report result` step.
+
+If you ever see runs failing on 429 despite this, raise the stagger modulus.
+
 ## Silencing a commit
 
 Put `!silent` in a commit **body** to keep it out of the feed, or `!anon` to
