@@ -1,0 +1,97 @@
+name: Discord activity log
+
+# Posts push / pull-request / issue activity cards to Discord.
+#
+# This is the *development* feed and is deliberately separate from the release
+# announcement (`release-discord.yml`), which uses the NEX.dev bot token and
+# targets the public announcements channel. This one uses a plain webhook and
+# should point at an internal dev channel.
+#
+# Setup — see .github/README-discord-activity.md. These are *repository*-level,
+# not org-level: nex-dev-org is on GitHub Free, where private repos cannot read
+# organization secrets or variables at all.
+#   secret DISCORD_WEBHOOK_URL  — the raw Discord webhook URL
+#   var    DISCORD_THREAD_ID    — optional, forum thread to post into
+#   var    EMBED_COLOR          — optional, brand accent (defaults to NEX red)
+#
+# The job never checks out the repository and holds no GITHUB_TOKEN
+# permissions, which is what makes `pull_request_target` safe here: it only
+# reads the event payload and never executes contributor code.
+
+on:
+  push:
+  pull_request_target:
+    types: [opened, reopened, converted_to_draft, ready_for_review, closed]
+  issues:
+    types: [opened, reopened, closed]
+
+permissions: {}
+
+concurrency:
+  group: discord-activity-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    # Forks do not carry org secrets, so the step would post nothing and fail
+    # noisily. Skip cleanly instead.
+    if: github.repository_owner == 'nex-dev-org'
+    env:
+      # The `secrets` context cannot be read from a step-level `if`, but a
+      # job-level `env` can, so hoist it here to gate on. Until the org secret
+      # exists the run goes green-with-skip rather than red.
+      WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    steps:
+      - name: Warn if webhook is unset
+        if: env.WEBHOOK_URL == ''
+        run: |
+          echo "::notice title=Discord activity log inactive::\
+          Org secret DISCORD_WEBHOOK_URL is not set, so nothing was posted. \
+          See .github/README-discord-activity.md for setup."
+
+      - name: Notify Discord
+        if: env.WEBHOOK_URL != ''
+        uses: Qbox-project/pipeline-pling@v1
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          thread-id: ${{ vars.DISCORD_THREAD_ID }}
+
+          # NEX.dev red, matching the release embeds. Overridable per repo with
+          # the EMBED_COLOR variable.
+          accent-color: ${{ vars.EMBED_COLOR || '#FF3B3B' }}
+
+          # Default branches keep the brand colour; working branches get their
+          # own so the feed is scannable at a glance. First match wins.
+          branch-colors: |
+            main=#FF3B3B
+            master=#FF3B3B
+            dev=#F59E0B
+            develop=#F59E0B
+            feat/**=#3B82F6
+            feature/**=#3B82F6
+            fix/**=#F97316
+            hotfix/**=#DC2626
+            chore/**=#6B7280
+            docs/**=#8B5CF6
+
+          event-colors: |
+            pull-request.opened=#1F883D
+            pull-request.ready=#1F883D
+            pull-request.draft=#6B7280
+            pull-request.merged=#8250DF
+            pull-request.closed=#CF222E
+            issue.opened=#1F883D
+            issue.reopened=#1F883D
+            issue.closed=#8250DF
+            issue.not_planned=#6B7280
+
+          # Release automation pushes a version-bump commit on every release;
+          # `release-discord.yml` already announces those, so `!silent` in a
+          # commit body keeps the dev feed from echoing them.
+          silent-keyword: '!silent'
+          skip-bots: true
+
+          use-repo-username: true
+          use-sender-avatar: true
+          highlight-first-time-contributors: true
