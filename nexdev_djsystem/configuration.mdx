@@ -1,0 +1,131 @@
+---
+title: "Configuration"
+description: "Every option is documented inline in the config files. This page is the map of what lives where and which keys matter most."
+---
+
+Every option is documented inline in the config files. This page is the map of what lives where and which keys matter most.
+
+| File | Holds |
+| --- | --- |
+| `config/config.lua` | Keybind, command, framework, audio defaults, item integration, permissions, security limits, UI defaults. |
+| `config/locations.lua` | The booths themselves. See [Booth locations](/nexdev_djsystem/locations). |
+| `config/effects.lua` | Lighting defaults and the eight presets. |
+| `config/soundboard.lua` | Soundboard clips and cooldown. See [Soundboard](/nexdev_djsystem/soundboard). |
+
+## Core keys
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `Config.Debug` | `false` | Verbose console output plus in-world debug rings for sound points and emitters. Leave off in production. |
+| `Config.Locale` | `'en'` | Must match a file in `locales/`. Falls back to English automatically. |
+| `Config.Framework` | `'auto'` | `auto`, `esx`, `qb`, `qbx`, `ox` or `standalone`. |
+| `Config.OpenKey` | `'F7'` | Default key to open the panel, or `false` to register none. Players can rebind it. |
+| `Config.Command` | `'dj'` | Chat command, or `false` to register none. |
+| `Config.RequirePresence` | `true` | Require the player to physically stand at the booth. |
+| `Config.SessionRange` | `12.0` | Metres before a session closes for walking away. |
+| `Config.DJIdleTimeout` | `300` | Seconds of no input before the DJ claim is released. |
+| `Config.ResyncInterval` | `30000` | Milliseconds between authoritative resync ticks. |
+| `Config.MaxDriftSeconds` | `1.5` | Drift tolerated before a client hard-seeks. |
+| `Config.UseTarget` | `true` | Use `ox_target`. `false` falls back to a proximity text prompt. |
+| `Config.TargetIcon` | `'fa-solid fa-compact-disc'` | Font Awesome 6 free solid. |
+| `Config.TargetDistance` | `2.0` | Interaction distance in metres. |
+| `Config.StreamerModeDefault` | `false` | Initial default only — the setting is per player. |
+
+<Info>
+  `Config.Debug = true` draws every sound point's audible radius as a ring on the ground. It is by far the fastest way to work out why someone can't hear anything.
+</Info>
+
+## Framework detection
+
+`Config.Framework = 'auto'` probes in this order and takes the first resource that is running:
+
+1. `qbx_core` → `qbx`
+2. `ox_core` → `ox`
+3. `es_extended` → `esx`
+4. `qb-core` → `qb`
+5. nothing → `standalone`
+
+`qbx_core` is checked before `qb-core` because Qbox servers often ship a qb-core compatibility shim, and `ox_core` before `es_extended` for the same reason.
+
+Forcing a framework whose resource isn't running logs a warning and falls back to standalone rather than erroring out.
+
+What actually changes per framework:
+
+* **Jobs** are read for job-gated booths and for admin jobs. Standalone always reports no job, so job rules never pass there.
+* **Gangs** are QBCore and Qbox only. On ESX, ox_core and standalone, gang rules never pass.
+* **Identifiers** work everywhere. On standalone the identifier is the player's `license:`.
+
+The panel re-fetches booths and permissions after a character switch or job change, so neither needs a reconnect.
+
+## Audio
+
+`Config.Audio` sets the defaults every booth inherits unless it overrides them.
+
+| Key | Purpose |
+| --- | --- |
+| `falloff` | `linear`, `quadratic` or `exponential`. |
+| `distance` | Default audible radius in metres. |
+| `volume` | Starting master volume. |
+| `maxVolume` | Ceiling a DJ may push the master to. |
+| `vehicleMuffle` | Gain multiplier inside a sealed vehicle. |
+| `indoorBoost` | Gain multiplier when listener and emitter share an interior. |
+| `updateInterval` | How often the gain is recomputed, in milliseconds (default `150`). |
+
+Volume for a booth is recomputed continuously as the falloff curve against the loudest sound point you're inside, multiplied by the DJ's master volume, the booth's ceiling, vehicle muffle, indoor boost and the listener's own volume slider — then smoothed so it never pops.
+
+<Info>
+  Three faders stack: the DJ's master volume, each listener's personal slider, and the booth's `maxVolume` ceiling. Any of them at zero is silence.
+</Info>
+
+## Effects
+
+`Config.Effects` sets light and laser caps, draw distance, particle assets and beat reactivity. `config/effects.lua` holds `Config.EffectDefaults` and eight presets: classic club, rave, chill lounge, festival, strobe storm, smoke and lasers, blackout, and neon synth.
+
+Beat-reactive pulsing is real analysis for direct media. For YouTube it **cannot** be — the audio lives in a cross-origin frame that can't be analysed — so the pulse is synthesised from a 120 BPM envelope. The lights still move, they just aren't literally following the track.
+
+## Props
+
+`Config.BoothModels` and `Config.SpeakerModels` each offer eight props to the in-game creator. Add your own model names to either list and they show up in the picker.
+
+<Warning>
+  A model that isn't streamed on the client simply won't spawn. The booth interaction still works — you just get no visible prop.
+</Warning>
+
+## Security limits
+
+`Config.Security` holds the caps, URL policy, allow and deny lists, auto-ban toggle, logging and rate limits.
+
+| Key | Purpose |
+| --- | --- |
+| `allowDirectLinks` | Set `false` to allow YouTube only. |
+| `allowedHosts` | Lock direct media down to your own CDN. |
+| `blockedHosts` | Extra denylist. Applies to YouTube hosts too. |
+| `maxUrlLength` | Default `512` bytes. |
+| `rateLimits` | Per-action token buckets. |
+| `strikes` | Warn, kick and ban thresholds, and the decay rate. |
+| `autoBan` | Off by default, and inert unless you register a ban adapter. |
+| `logToConsole` | Console logging for security events. |
+
+<Danger>
+  The Discord webhook URL is **not** in `Config.Security`. It is the server-only `nexdev_djsystem_webhook` convar — see [Installation](/nexdev_djsystem/installation#the-discord-webhook).
+</Danger>
+
+Hard caps enforced on the server regardless of what a client asks for: 100 tracks per queue, 25 playlists per player, 100 tracks per playlist, 100 database booths, 12 sound points and 24 effect emitters per booth, 12 lights and 16 lasers per rig, 120 m maximum audible distance, 3 hours maximum track duration.
+
+## Interface defaults
+
+`Config.UI` sets the default accent colour, scale, anchor, blur and compact mode. Each player can override all of them from the settings tab, and their choice is persisted locally.
+
+## The usable item
+
+Off by default. Turn on `Config.Item.enabled` and, with `ox_inventory` running, `Config.Item.name` (default `dj_controller`) becomes a usable item that opens the panel at the nearest booth the player is allowed to use.
+
+If `ox_inventory` isn't started, the item is skipped with a console warning rather than erroring.
+
+<Info>
+  `Config.Item.boothItem` and `Config.Item.consumeOnPlace` are reserved keys. Nothing reads them in 1.0.0.
+</Info>
+
+## Locales
+
+`locales/en.json` holds every string the script can display, selected by `Config.Locale`. Every string also has a hard-coded English fallback, so an incomplete or missing locale file degrades a label and never breaks a feature.

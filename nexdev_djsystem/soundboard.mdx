@@ -1,0 +1,69 @@
+---
+title: "Soundboard"
+description: "Twenty one-shot SFX layered over the music. The shipped URLs are placeholders — you must replace them before going live."
+---
+
+The soundboard plays one-shot SFX **over** the music, not instead of it. Twenty entries ship across four categories: hype, transitions, effects and voice.
+
+<Danger>
+  The shipped clips point at `https://cdn.yourserver.com/...`, which resolves to nothing. **Replace every URL in `config/soundboard.lua` before going live**, or the soundboard silently does nothing.
+</Danger>
+
+## An entry
+
+```lua
+{
+    key = 'airhorn',
+    label = 'Air horn',
+    icon = 'HiSpeakerWave',
+    url = 'https://cdn.yourserver.com/nexdev_djsystem/sfx/airhorn.mp3',
+    volume = 0.80,
+    category = 'Hype',
+},
+```
+
+| Field | Rules |
+| --- | --- |
+| `key` | Lowercase letters, digits and `_`. Unique. This is the only thing a client ever sends. |
+| `label` | Button text. Sentence case. |
+| `icon` | An icon name from the bundled icon set. |
+| `url` | Validated exactly like a queued track: **https only**, and the path must end in `.mp3`, `.ogg`, `.wav`, `.m4a`, `.aac`, `.flac`, `.opus` or `.webm`. |
+| `volume` | `0` to `1`, applied on top of the booth's master volume. |
+| `category` | Grouping tab in the panel. |
+
+## Hosting the files
+
+Host your own. Don't hotlink someone else's CDN, and only use audio you have the right to distribute.
+
+Practical notes:
+
+* **Keep clips short** — under five seconds. They layer over the music.
+* **Normalise them.** A clip mastered louder than the track will make people jump.
+* The host must be publicly resolvable. Private IPs, loopback, `.local`, `.internal` and cloud metadata addresses are all rejected — the same URL rules that apply to queued tracks.
+* `Config.Security.allowedHosts` also applies here. If you've locked direct media to your own CDN, your soundboard files need to be on it.
+
+## Cooldowns
+
+`Config.SoundboardCooldown` (default 1500 ms) is enforced **per player and per clip**, on top of a rate limit. Two DJs cannot machine-gun the same sound, and one DJ cannot machine-gun anything.
+
+## Turning it off
+
+Set `soundboard = false` on a booth to disable it there entirely — for everyone, including admins. It's a capability of the booth, not a permission. See [Booth locations](/nexdev_djsystem/locations#per-booth-capability).
+
+To gate it rather than disable it, use the `soundboard` action tier instead. See [Permissions](/nexdev_djsystem/permissions#layer-1-the-action-tier).
+
+## What players can see
+
+Clients send a key. The server resolves it against your config, checks the booth has the soundboard enabled, checks the cooldown, then broadcasts the key to everyone in range.
+
+<Info>
+  The panel never receives your URL list. It only ever gets the key, label, icon and category — so your CDN paths aren't exposed to players.
+</Info>
+
+Streamer mode suppresses soundboard one-shots locally, along with the music.
+
+## Adding your own
+
+Add entries to `Config.Soundboard` in `config/soundboard.lua`. Use a new `category` string and it becomes a new tab in the panel automatically — you don't have to stick to the four that ship.
+
+Restart the resource after editing.

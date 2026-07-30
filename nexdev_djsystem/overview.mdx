@@ -1,0 +1,51 @@
+---
+title: "Overview"
+description: "A synchronised, server-authoritative DJ and club music system for FiveM. Everyone at the booth hears the same track at the same position, attenuated by distance, with a full club lighting rig on top."
+---
+
+A synchronised, server-authoritative DJ and club music system for FiveM. Everyone at the booth hears the same track at the same position, attenuated by distance, with a full club lighting rig on top.
+
+Any point on the map can become a DJ booth. A player walks up, opens the panel, queues a YouTube link or a direct audio URL, and everyone inside the booth's sound points hears it — in sync, quieter as they walk away, muffled inside a car, boosted inside an interior.
+
+The important part is that **nothing about playback is decided on a client**. The server owns the queue, the track, the play position, the volume, the falloff, the lighting rig and who may touch any of it. Clients receive state and render it. A modified client can lie to itself, and only to itself.
+
+## In this section
+
+* [Installation](/nexdev_djsystem/installation)
+* [Configuration](/nexdev_djsystem/configuration)
+* [Booth locations](/nexdev_djsystem/locations)
+* [Location creator](/nexdev_djsystem/location-creator)
+* [Permissions](/nexdev_djsystem/permissions)
+* [Player usage](/nexdev_djsystem/usage)
+* [Soundboard](/nexdev_djsystem/soundboard)
+* [Commands](/nexdev_djsystem/commands)
+* [Troubleshooting](/nexdev_djsystem/troubleshooting)
+
+## What you get
+
+* Works on **ESX**, **QBCore**, **Qbox**, **ox_core** and **standalone** — auto-detected, one build for all of them
+* UI ships ready to use — no build step, nothing to compile
+* **YouTube playback** (watch links, `youtu.be`, `/embed/`, `/shorts/`, `/live/`, YouTube Music and nocookie) plus direct https media — `.mp3 .ogg .wav .m4a .aac .flac .opus .webm`
+* Track titles resolved **on the server**, so a client cannot rename what everyone else sees
+* Queue of up to 100 tracks per booth, with remove, reorder, clear and play-now
+* Loop off / one / all, shuffle, seek, skip, next and previous
+* **One authoritative clock** — clients extrapolate from the last server stamp and only hard-seek when they drift too far
+* **Multiple sound points per booth**, each with its own radius. The loudest point you're inside wins, so a 55 m main stage and a 12 m side bar coexist correctly
+* Three falloff curves, vehicle muffling, interior boost, and a personal volume slider per listener
+* Optional speaker props streamed per sound point
+* **Club lighting** — moving wash lights, sweeping lasers, ground smoke, sparks and a strobe, each individually tunable, with per-emitter placement
+* Eight lighting presets, and **beat-reactive pulsing** driven by the music
+* **Soundboard** — twenty one-shot SFX across four categories, layered over the music, with per-player and per-clip cooldowns
+* **Playlists** — up to 25 per player, 100 tracks each, private or shared with a booth
+* **In-game location builder** (`/djcreate`) — ghost-prop placement, prop picker, sound points with live radius rings, effect emitters, audio profile, permissions, lighting preset and blip
+* **Streamer mode** that hides titles and artwork and mutes the audio locally, so a recording carries no copyrighted audio
+* Per-player UI settings — accent colour, scale, anchor, blur, compact mode — all persisted
+* Four booths ship configured: Vanilla Unicorn, Bahama Mamas West, the After Hours nightclub and a Vespucci Beach festival stage
+* Optional **Discord webhook** logging, batched so it can't be turned into a flood source
+* Locations, playlists and an audit trail in MySQL — schema created automatically on first start
+
+## Requirements at a glance
+
+Requires [`ox_lib`](https://github.com/overextended/ox_lib) and [`oxmysql`](https://github.com/overextended/oxmysql). [`ox_target`](https://github.com/overextended/ox_target) and [`ox_inventory`](https://github.com/overextended/ox_inventory) are optional and auto-detected. A framework is **not** required.
+
+See [Installation](/nexdev_djsystem/installation) for the full list.

@@ -94,6 +94,22 @@
             ]
           },
           {
+            "group": "nexdev_djsystem",
+            "icon": "compact-disc",
+            "pages": [
+              "nexdev_djsystem/overview",
+              "nexdev_djsystem/installation",
+              "nexdev_djsystem/configuration",
+              "nexdev_djsystem/locations",
+              "nexdev_djsystem/location-creator",
+              "nexdev_djsystem/permissions",
+              "nexdev_djsystem/usage",
+              "nexdev_djsystem/soundboard",
+              "nexdev_djsystem/commands",
+              "nexdev_djsystem/troubleshooting"
+            ]
+          },
+          {
             "group": "nexdev_donatorsystem",
             "icon": "gift",
             "pages": [

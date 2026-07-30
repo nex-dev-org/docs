@@ -1,0 +1,91 @@
+---
+title: "Troubleshooting"
+description: "If something's not working, check the F8 console (client) and your server console, filtered for [nexdev_djsystem]. Most issues print a clear reason there."
+---
+
+If something's not working, check the **F8** console (client) and your **server console**, filtered for `[nexdev_djsystem]`. Most issues print a clear reason there.
+
+Setting `Config.Debug = true` and restarting draws every sound point's radius as a ring on the ground. For anything audio-related, do that first.
+
+## There is no audio
+
+Work down this list in order.
+
+1. **Is the panel showing a track as playing?** If not, this is a playback problem, not an audio problem — see the next section.
+2. **Streamer mode.** It mutes the audio locally by design. Run `/djstreamer` to check.
+3. **Volume.** Three faders stack: the DJ's master volume, your own **my volume** slider on the settings tab, and the booth's `maxVolume` ceiling. Any of them at zero is silence.
+4. **Distance.** You have to be inside a sound point's radius. Turn on `Config.Debug` and look for the ring.
+5. **The audible-range slider.** It scales every radius proportionally. If a DJ dragged it to the minimum, the whole rig shrank.
+6. **A sealed vehicle** applies `vehicleMuffle` — as low as `0.2` on some shipped booths. Get out and check.
+7. **Windows audio.** FiveM must not be muted in the volume mixer, and the game window generally has to have had focus at least once.
+
+## YouTube is not loading
+
+| Check | Detail |
+| --- | --- |
+| The link | Only `youtube.com`, `www.`, `m.`, `music.youtube.com`, `youtu.be` and `www.youtube-nocookie.com` are accepted, and the 11-character video ID has to be readable from it. |
+| `Config.Security.blockedHosts` | It applies to YouTube hosts too. |
+| The video itself | Age-restricted, embedding-disabled, region-blocked and private videos cannot play in an embedded player. Use a different upload. |
+| The client's network | The embedded player is loaded at runtime. If a client's DNS or firewall blocks it, YouTube fails while direct media still works — that's the quickest way to tell the two apart. |
+| Titles show as `YouTube <id>` | The server's title lookup failed or timed out. Playback is unaffected. Check the **server** can reach `https://www.youtube.com/oembed`. |
+| Live streams | They report no usable duration. They play, but never auto-advance — skip them manually. |
+
+## The panel will not open
+
+1. **Are you in range?** With `Config.RequirePresence = true`, the keybind and `/dj` only open the nearest booth you're actually standing at. "There is no DJ booth nearby" means exactly that.
+2. **Do you have permission?** "You are not allowed to do that here" is the server refusing the session. Check the booth's mode, and check your ACE — temporarily granting yourself `nexdev_djsystem.admin` is the fastest test.
+3. **The keybind.** `Config.OpenKey` defaults to **F7** but is rebindable, and may already have been rebound. `/dj` always works.
+4. **Give it a moment after a server start.** The panel retries its initial fetch with a backoff of up to 30 seconds. `Config.Debug = true` prints the attempt count.
+5. **Stuck with a mouse cursor?** Three separate mechanisms release focus — the close button, an ESC watch, and a ten-second watchdog. If all three somehow failed, `restart nexdev_djsystem` always drops focus.
+
+<Warning>
+  If the interface files are missing or damaged, the resource cannot start at all. Re-download the resource from your purchase rather than trying to repair it.
+</Warning>
+
+## The target option does not show
+
+| Check | Detail |
+| --- | --- |
+| Is `ox_target` started? | With `Config.UseTarget = true` but `ox_target` not running, you get a text prompt on **E** instead. If that's what you're seeing, this is why. |
+| `Config.UseTarget = false` | Forces that same fallback deliberately. |
+| Distance | `Config.TargetDistance` defaults to 2.0 m. You have to be close. |
+| `booth.spawn = false` | With no prop there's no entity to target, so a box zone is registered at the anchor instead. If the anchor is inside geometry, the zone is unreachable — nudge it with `/djedit`. |
+| The prop failed to stream | A model name that isn't on the client can't spawn. Check it against `Config.BoothModels` and turn on `Config.Debug`. |
+| Missing options | **Stop the music** only appears when something is playing and you may control it. **Edit location** only appears for admins. **Open the DJ panel** is always registered. |
+
+## Booths
+
+| Problem | Fix |
+| --- | --- |
+| A booth I added to the config didn't appear | Almost always an invalid field. An unknown permission mode rejects the whole booth on purpose — check the server console for the reason. Config changes also need a resource restart. |
+| No booths at all | `Config.DefaultLocations` is empty and the database has no rows. Run `/djadmin list` and read the server console. |
+| An edit didn't reach players | It should be immediate. If it wasn't, run `/djreload`. |
+| I edited a job-gated booth and now anyone can DJ | The editor can't pre-fill jobs, gangs, identifiers or the ACE principal, and **anything left blank is saved blank**. Re-enter them and save again. See [Location creator](/nexdev_djsystem/location-creator). |
+| I deleted a database booth and the old one came back | That's correct. A database booth overrides a config booth with the same ID — deleting it restores the config entry. |
+| Config booth won't delete in-game | Config booths aren't deletable in-game by design. Remove it from `config/locations.lua`. |
+
+## Other things worth checking
+
+* **"The database is unavailable."** `oxmysql` isn't connected. Playback still works; playlists, saved booths and audit rows don't. Check your `mysql_connection_string` and that `oxmysql` starts first.
+* **The soundboard does nothing.** The shipped URLs are placeholders. See [Soundboard](/nexdev_djsystem/soundboard).
+* **Buttons are greyed out or clicks do nothing.** Usually a job or group change while the panel was open. The panel refreshes on a 30-second loop; reopening it resyncs immediately.
+* **`permission:refused`, `proximity:refused`, `rate_limit:refused` or `session:stale` in the console.** These are traces, not punishments — the request was dropped and the player was charged nothing. One line per player per ten seconds. A steady stream of `permission:refused` from one player usually means their job changed while their panel was open; a steady stream of `proximity:refused` means they're standing right on a booth's radius edge.
+* **Someone was kicked for "security".** The console and the audit table record which flag and why. Only one thing raises a strike — a malformed payload that the shipped interface cannot produce. An ordinary player collecting strikes is a bug worth reporting, not a threshold to raise.
+
+<Warning>
+  Read the flag reasons before touching `Config.Security.strikes`. Raising the thresholds hides the symptom of a real problem.
+</Warning>
+
+## Before opening a support ticket
+
+Please include:
+
+1. Your `Config.Framework` value, and what it actually detected on boot.
+2. Your FiveM artifact build number.
+3. Whether it's a fresh install or after a config change.
+4. Server console output filtered for `[nexdev_djsystem]` from when the issue happens.
+5. F8 console output filtered for `[nexdev_djsystem]`.
+6. Whether the booth came from `config/locations.lua` or `/djcreate`.
+7. For audio issues: a screenshot with `Config.Debug = true` showing the radius rings.
+
+See [Support & contact](/general/support) for how to reach us.

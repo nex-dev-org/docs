@@ -1,0 +1,140 @@
+---
+title: "Permissions"
+description: "Two global ACE objects, plus a two-layer per-booth system: what each action requires, and who counts as a DJ at that booth."
+---
+
+There are two global ACE objects, and then a two-layer system per booth. Everything is decided on the server, on every request.
+
+## The two global ACE objects
+
+| ACE object | Grants |
+| --- | --- |
+| `nexdev_djsystem.admin` | Everything, everywhere. Bypasses every per-booth rule, can delete any database booth, and is required by `/djstop`, `/djreload` and `/djadmin`. |
+| `nexdev_djsystem.creator` | The in-game location creator and the ability to save booths. Admins have it implicitly. |
+
+Add them to `server.cfg`:
+
+```cfg
+## Full control of the DJ system
+add_ace group.admin nexdev_djsystem.admin allow
+
+## The in-game location creator (/djcreate, /djedit, /djdelete)
+add_ace group.admin nexdev_djsystem.creator allow
+```
+
+`group.admin` is just the conventional name — use whatever principal your server already has. If you run txAdmin, its administrators normally already sit in `group.admin`, so those two lines are usually all you need.
+
+To give the builder role to someone who is **not** a full admin:
+
+```cfg
+add_ace group.djbuilder nexdev_djsystem.creator allow
+add_principal identifier.license:1a2b3c4d5e6f7890abcdef1234567890abcdef12 group.djbuilder
+```
+
+## Framework groups and jobs
+
+`Config.Permissions.adminGroups` (default `{ 'admin', 'superadmin' }`) is checked against your framework's group system, and `Config.Permissions.adminJobs` (empty by default) against the player's job. Satisfying either is equivalent to holding `nexdev_djsystem.admin`.
+
+Answers are cached for five seconds per player so framework lookups don't run on every request, and cleared on disconnect. The server console always passes every check, so scheduled tasks and console commands are never blocked.
+
+## Layer 1 — the action tier
+
+Each booth maps five actions to a tier:
+
+| Tier | Means |
+| --- | --- |
+| `open` | Anyone standing at the booth. |
+| `dj` | Must satisfy the booth's access mode — layer 2 below. |
+| `admin` | Admins only. |
+
+The five actions:
+
+| Action | Covers |
+| --- | --- |
+| `control` | Transport, volume, distance, loop, shuffle, seek |
+| `queue` | Add, remove, move, clear, play now |
+| `effects` | The lighting rig |
+| `soundboard` | One-shot SFX |
+| `playlists` | Saving and loading sets |
+
+This is how the shipped beach stage lets anyone add a track and hit the soundboard while keeping the transport controls for staff:
+
+```lua
+actions = {
+    control    = 'dj',
+    queue      = 'open',
+    effects    = 'dj',
+    soundboard = 'open',
+    playlists  = 'dj',
+},
+```
+
+## Layer 2 — the access mode
+
+`permissions.mode` decides who counts as a DJ at that booth:
+
+| Mode | Passes when |
+| --- | --- |
+| `open` | Always. |
+| `job` | The player's job is listed in `jobs` and their grade is **at or above** the listed grade. |
+| `gang` | Same, against `gangs`. QBCore and Qbox only. |
+| `identifier` | Any of the player's identifiers is in `identifiers` — `license:`, `discord:`, `steam:` or `fivem:`. |
+| `ace` | The player is ACE-allowed for the booth's `ace` object. |
+| `any` | Any **populated** rule above passes. If none of the four are populated, `any` behaves exactly like `open`. |
+| `mixed` | Alias of `any`. |
+
+<Warning>
+  An unknown mode **fails closed**. A typo rejects the whole booth rather than downgrading it, so the booth disappears loudly instead of quietly publishing itself to everybody. Check the server console if a booth you just added didn't show up.
+</Warning>
+
+A global admin passes both layers everywhere.
+
+<Info>
+  `soundboard = false` on a booth disables the soundboard there for everyone, **including admins**. It's a capability of the booth, not a permission.
+</Info>
+
+## The per-booth ACE
+
+Every booth carries its own ACE object in `permissions.ace`. A booth whose mode is `ace` — or `any`, with the ACE populated — admits exactly the holders of that object.
+
+The shipped nightclub is the worked example:
+
+```cfg
+## Only the event team may DJ at The Nightclub
+add_ace group.eventteam nexdev_djsystem.club_nightclub allow
+
+## Put people in that group
+add_principal identifier.license:1a2b3c4d5e6f7890abcdef1234567890abcdef12 group.eventteam
+add_principal identifier.fivem:1234567 group.eventteam
+```
+
+The other shipped booths declare `nexdev_djsystem.club_vanilla`, `nexdev_djsystem.club_bahama` and `nexdev_djsystem.beach_festival`. They're only consulted when the booth's mode is `ace` or `any`, so declaring them costs nothing until you use them.
+
+## The DJ claim
+
+Being *allowed* to DJ and *currently holding* the booth are two different things. The first is a permission; the second is a lock.
+
+Only one player holds the deck at a booth at a time. The claim is taken on the first control action and released on:
+
+* Closing the panel
+* Disconnecting
+* Walking out of range
+* Dying
+* An admin running `/djadmin kick`
+* `Config.DJIdleTimeout` seconds without a control input (default 300)
+
+## What the panel is told
+
+When a session opens, the server sends a resolved permission block and pushes an update whenever it changes. This is **advisory only** — the panel uses it to grey out buttons.
+
+Every request is re-checked on arrival, so a stale or forged permission block can only ever hide a button, never grant one.
+
+<Info>
+  This is why a player whose job changed while their panel was open sees buttons that no longer work. The panel refreshes on a 30-second loop; the server is already correct. Reopening the panel resyncs it immediately.
+</Info>
+
+## Presence
+
+With `Config.RequirePresence = true` (the default), every state-changing request also passes a proximity check against the booth anchor and all of its sound points, computed on the server from the player's actual position.
+
+You cannot control a booth from across the map, and you cannot control one you don't have an open session at.

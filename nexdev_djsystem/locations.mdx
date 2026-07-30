@@ -1,0 +1,130 @@
+---
+title: "Booth locations"
+description: "Four booths ship configured out of the box. Add your own in config/locations.lua, or build them in-game with /djcreate."
+---
+
+Four booths ship configured out of the box — the Vanilla Unicorn, Bahama Mamas West, the After Hours nightclub interior and a Vespucci Beach festival stage. They're examples. Delete the ones you don't want.
+
+You can add booths two ways: edit `config/locations.lua`, or build them in-game with [`/djcreate`](/nexdev_djsystem/location-creator). The in-game route is easier and is what most people use — this page covers the config shape, which is also what the creator writes.
+
+## The shape
+
+Add an entry to `Config.DefaultLocations`. Every field is documented inline in the file.
+
+```lua
+{
+    id = 'my_club',                          -- unique, lowercase, 3-48 chars, the sync key
+    label = 'My club',                       -- display name, max 64 characters
+    coords = vec3(0.0, 0.0, 70.0),           -- interaction anchor
+    heading = 180.0,
+    booth = {
+        model = 'ex_prop_ex_dj_01',
+        offset = vec3(0.0, 0.0, 0.0),        -- added to coords
+        heading = 0.0,                       -- added to heading
+        spawn = true,                        -- false = interaction only, no prop
+    },
+    soundPoints = {                          -- 1 to 12
+        { coords = vec3(0.0, 0.0, 70.0), distance = 24.0 },
+    },
+    audio = {
+        falloff = 'linear',                  -- linear | quadratic | exponential
+        distance = 24.0,                     -- default audible radius in metres
+        volume = 0.5,                        -- starting master volume
+        maxVolume = 1.0,                     -- ceiling a DJ may push the master to
+        vehicleMuffle = 0.3,                 -- gain in a sealed vehicle
+        indoorBoost = 1.15,                  -- gain when listener and emitter share an interior
+    },
+    permissions = {
+        mode = 'job',                        -- open | job | gang | identifier | ace | any
+        jobs = { ['bartender'] = 2 },        -- name = minimum grade
+        gangs = {},
+        identifiers = {},
+        ace = 'nexdev_djsystem.my_club',
+        actions = {                          -- open | dj | admin
+            control = 'dj',
+            queue = 'dj',
+            effects = 'dj',
+            soundboard = 'dj',
+            playlists = 'dj',
+        },
+    },
+    effects = { },                           -- see config/effects.lua
+    effectPoints = {                         -- 0 to 24
+        { x = 0.0, y = 0.0, z = 73.0, heading = 180.0, type = 'light' },
+    },
+    soundboard = true,
+    blip = { enabled = true, sprite = 136, color = 27, scale = 0.7 },
+    persistent = false,                      -- always false for config entries
+}
+```
+
+Blip sprite and colour IDs are listed in the [FiveM blip reference](https://docs.fivem.net/docs/game-references/blips/).
+
+<Info>
+  Config booths are read-only at runtime. A database booth with the same `id` overrides the config entry — and deleting that database row restores the config entry on the next reload.
+</Info>
+
+## Sound points
+
+This is the part worth understanding, because it's what makes a club sound right.
+
+A booth has **one or more sound points**, each with its own audible radius. The loudest point you're inside wins. That's how a 55 m main stage and a 12 m side bar coexist at the same venue without one drowning the other.
+
+```lua
+soundPoints = {
+    { coords = vec3(-1606.0, -3013.0, -78.0), distance = 55.0 },   -- main floor
+    { coords = vec3(-1590.0, -2999.0, -78.0), distance = 12.0 },   -- side bar
+},
+```
+
+You can have up to 12 per booth, and no radius may exceed 120 m.
+
+A sound point can also stream a **speaker prop**, so there's something visible making the noise.
+
+<Warning>
+  The DJ's audible-range slider scales the whole rig proportionally. If someone drags it to the minimum, every radius shrinks with it — which is a very common reason for "the music suddenly went quiet".
+</Warning>
+
+## Falloff curves
+
+| Curve | Behaviour |
+| --- | --- |
+| `linear` | Even fade across the radius. Predictable, good default. |
+| `quadratic` | Stays loud near the emitter, drops off faster at the edge. Good for big open stages. |
+| `exponential` | Drops off quickly. Good for tight indoor rooms where you don't want bleed. |
+
+On top of the curve: `vehicleMuffle` applies only inside a sealed vehicle, and `indoorBoost` applies only when the listener and the emitter share an interior.
+
+## Effect emitters
+
+`effectPoints` places individual lighting emitters around the venue. Each one is typed:
+
+| Type | Renders |
+| --- | --- |
+| `light` | A moving wash light. |
+| `laser` | A sweeping laser beam. |
+| `smoke` | Ground smoke. |
+| `spark` | Sparks. |
+| `any` | Whatever the current lighting preset assigns. |
+
+Up to 24 per booth, capped at 12 lights and 16 lasers per rig. Each emitter carries a heading, which is the direction a beam sweeps from.
+
+## Booths without a prop
+
+Set `booth.spawn = false` for an MLO that already contains a DJ booth. The interaction still registers — the script places a box zone at the anchor instead of attaching to a prop.
+
+<Warning>
+  With no prop there's no entity to target, so the anchor has to be somewhere reachable. If it's a metre inside geometry, the zone is unreachable. Nudge it with `/djedit`.
+</Warning>
+
+## Per-booth capability
+
+| Field | Effect |
+| --- | --- |
+| `soundboard = false` | Disables the soundboard at that booth **for everyone, including admins**. It's a capability of the booth, not a permission. |
+| `blip.enabled = false` | No map blip. The booth still works. |
+| `audio.maxVolume` | Hard ceiling on how loud a DJ can make that booth. |
+
+## Reloading
+
+Booths added to `config/locations.lua` need a resource restart. Booths in the database can be reloaded live with `/djreload`, and edits made through `/djedit` push to everyone immediately.

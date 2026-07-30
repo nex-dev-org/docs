@@ -1,0 +1,126 @@
+---
+title: "Installation"
+description: "How to install NEX DJ System on your FiveM server."
+---
+
+## Requirements
+
+| Dependency | Required | Notes |
+| --- | --- | --- |
+| FiveM server with `lua54` enabled | Yes | |
+| MySQL 5.7+ or MariaDB 10.3+ | Yes | `utf8mb4`, so track titles with emoji or CJK survive a round trip. |
+| [`ox_lib`](https://github.com/overextended/ox_lib) | Yes | Callbacks, points, dialogs, notifications, keybinds, locales. |
+| [`oxmysql`](https://github.com/overextended/oxmysql) | Yes | Locations, playlists and the audit log. |
+| [`ox_target`](https://github.com/overextended/ox_target) | Optional | Booth interaction. Without it, the script falls back to a text prompt on **E**. |
+| [`ox_inventory`](https://github.com/overextended/ox_inventory) | Optional | Only used when the usable item is turned on (off by default). |
+
+A framework is **not** required. On a standalone server, jobs and gangs resolve empty and access control falls back to ACE permissions and identifier lists.
+
+<Info>
+  `ox_target` and `ox_inventory` are deliberately **not** listed as hard dependencies, so a server that uses neither still boots cleanly.
+</Info>
+
+## Steps
+
+1. Drop the resource into your server, e.g. `resources/[nex]/nexdev_djsystem/`.
+
+2. Add it to your `server.cfg` **after** its dependencies:
+
+   ```cfg
+   ensure oxmysql
+   ensure ox_lib
+   ensure ox_target        # optional
+   ensure ox_inventory     # optional
+   ensure nexdev_djsystem
+   ```
+
+3. Add the ACE permissions:
+
+   ```cfg
+   add_ace group.admin nexdev_djsystem.admin allow
+   add_ace group.admin nexdev_djsystem.creator allow
+   ```
+
+   See [Permissions](/nexdev_djsystem/permissions) for what each one grants and how to hand the builder role to someone who isn't a full admin.
+
+4. Start your server. The database tables are created automatically on first start — no SQL to run.
+
+5. **Replace the soundboard URLs.** `config/soundboard.lua` ships with placeholder `https://cdn.yourserver.com/...` addresses that resolve to nothing. See [Soundboard](/nexdev_djsystem/soundboard).
+
+That's it — the four shipped booths appear on the map.
+
+<Warning>
+  Step 5 is not optional if you want the soundboard. Every shipped clip URL is a placeholder and will silently do nothing until you point it at real files you host.
+</Warning>
+
+## The database
+
+You do not need to import any SQL. The script runs `CREATE TABLE IF NOT EXISTS` for all three tables on start.
+
+| Table | Holds |
+| --- | --- |
+| `nexdev_djsystem_locations` | Booths created or edited with the in-game creator. Config booths are **not** stored here. |
+| `nexdev_djsystem_playlists` | Player playlists, keyed to a stable framework identifier. |
+| `nexdev_djsystem_logs` | Audit trail — privileged actions, queue additions, playlist writes, location changes and security events. |
+
+`install.sql` sits in the resource root for reference, for DBAs who prefer to provision schema out of band, and for backup and restore. It is not required.
+
+If the database is unreachable the script still runs — config booths load and playback works. Only the persistence features (saved booths, playlists, audit rows) report "the database is unavailable" and refuse.
+
+The audit table is never pruned automatically. If you want that, schedule it yourself:
+
+```sql
+DELETE FROM `nexdev_djsystem_logs` WHERE `created_at` < DATE_SUB(NOW(), INTERVAL 30 DAY);
+```
+
+## Configure
+
+Work through these in order:
+
+1. `config/config.lua` — keybind, command, framework, audio defaults, permissions, security limits, UI defaults.
+2. `config/locations.lua` — delete the shipped booths you don't want, add your own.
+3. `config/soundboard.lua` — **replace every placeholder URL.**
+4. `config/effects.lua` — lighting presets and defaults. Usually fine as shipped.
+
+See [Configuration](/nexdev_djsystem/configuration).
+
+## The Discord webhook
+
+The webhook URL is **not** a config key, because `config/config.lua` is readable by every connected client. Set it as a server-only convar in `server.cfg` instead:
+
+```cfg
+set nexdev_djsystem_webhook "https://discord.com/api/webhooks/..."
+```
+
+<Danger>
+  Use `set`, never `setr`. `setr` replicates the value to every client, which leaks your webhook URL to anyone connected.
+</Danger>
+
+Leave it unset to disable webhook logging entirely.
+
+## Checking it worked
+
+On a healthy start the server console prints:
+
+```
+[nexdev_djsystem] info  startup  DJ system ready (framework: qbx)
+```
+
+Walk to one of the shipped booths and press **F7** (or run `/dj`). The panel should open with the booth's name in the header.
+
+From F8:
+
+```
+lua print(GetResourceState('nexdev_djsystem'))
+```
+
+Should print `started`. If it prints `missing` or `stopped`, fix `server.cfg` and restart.
+
+## Updating
+
+Your booths, playlists and logs all live in MySQL and are preserved automatically. Booths you added to `config/locations.lua`, and every other file under `config/`, are yours — keep your edited copies when you replace the resource files.
+
+1. Replace the resource files with the new version, keeping your edited `config/` files.
+2. Restart the server.
+
+The script checks for updates on start and prints a notice in the server console when a newer version is available.

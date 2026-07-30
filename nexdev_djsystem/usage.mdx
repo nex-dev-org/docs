@@ -1,0 +1,112 @@
+---
+title: "Player usage"
+description: "Walk up to a booth, press F7, queue a track. This is what the panel does and how the music behaves as you move around."
+---
+
+Walk up to a booth and press **F7**, or run `/dj`. With `ox_target`, aim at the booth and pick **Open the DJ panel** instead.
+
+## Queueing music
+
+Paste a link into the queue tab and hit add. Two kinds work:
+
+| Source | Accepted |
+| --- | --- |
+| YouTube | Watch links, `youtu.be`, `/embed/`, `/shorts/`, `/live/`, YouTube Music and nocookie links. |
+| Direct media | `https` only, ending in `.mp3`, `.ogg`, `.wav`, `.m4a`, `.aac`, `.flac`, `.opus` or `.webm`. |
+
+Titles are resolved on the server, so a queued track shows its real name and nobody can rename it for the room.
+
+<Info>
+  Age-restricted, private, region-blocked and embedding-disabled YouTube videos cannot play in an embedded player. Nothing can be done about that from this side — use a different upload.
+</Info>
+
+The queue holds up to 100 tracks. You can remove, reorder, clear, and play any track immediately.
+
+## The deck
+
+| Control | Does |
+| --- | --- |
+| Play / pause / stop | Transport. |
+| Next / previous | Move through the queue. |
+| Skip forward / back | Nudge within the current track. |
+| Seek | Drag the playhead. |
+| Loop | Off, one, or all. |
+| Shuffle | Randomise queue order. |
+| Master volume | How loud the booth is **for everyone**. |
+| Audible range | Scales every sound point's radius proportionally. |
+| Falloff | Linear, quadratic or exponential. |
+
+<Warning>
+  Master volume and audible range affect everyone at the venue. The **my volume** slider on the settings tab is the one that only affects you.
+</Warning>
+
+## Holding the deck
+
+Only one person controls a booth at a time. You take the deck with your first control action, and you lose it when you close the panel, walk away, die, disconnect, or go five minutes without touching anything.
+
+Being allowed to DJ and currently holding the deck are different things — see [Permissions](/nexdev_djsystem/permissions#the-dj-claim).
+
+## How the music follows you
+
+The booth has one or more sound points, each with a radius. The loudest one you're inside wins.
+
+* Walking away fades the music out rather than cutting it.
+* Sitting in a sealed car muffles it.
+* Being in the same interior as the emitter boosts it slightly.
+* Your personal volume slider scales all of it, for you alone.
+
+Everyone hears the same track at the same position. Clients keep themselves in step with the server's clock and only correct when they drift far enough for it to matter.
+
+## Effects
+
+The effects tab drives the club lighting rig — moving wash lights, sweeping lasers, ground smoke, sparks and a strobe. Each is individually tunable: mode, colour, intensity, range, speed and count.
+
+Eight presets ship: **classic club**, **rave**, **chill lounge**, **festival**, **strobe storm**, **smoke and lasers**, **blackout** and **neon synth**.
+
+Lighting pulses with the music. For direct media that's real analysis of the audio; for YouTube the pulse is synthesised at a steady tempo, because the audio can't be analysed from an embedded player.
+
+## Soundboard
+
+One-shot SFX layered **over** the music, not instead of it. Twenty clips across four categories. There's a short cooldown per player and per clip, so two people can't machine-gun the same sound.
+
+Your server owner has to point these at real files — see [Soundboard](/nexdev_djsystem/soundboard).
+
+## Playlists
+
+Save the current queue as a set. Up to 25 playlists per player, 100 tracks each.
+
+| Option | Means |
+| --- | --- |
+| Private | Only you can load it. |
+| Shared | Anyone at the same booth can load it. |
+
+Loading a playlist either **replaces** the queue or **appends** to it. Every stored track is re-validated when it loads, so a set saved months ago can't smuggle in a link that's since been blocked.
+
+## Settings
+
+All per-player, all remembered between sessions:
+
+* Accent colour
+* Panel scale, anchor position, blur, compact mode
+* **My volume** — scales every booth for you alone, without touching anyone else's playback or the DJ's mix
+* **Streamer mode**
+
+## Streamer mode
+
+For anyone recording or streaming. Toggle it with `/djstreamer`, from the settings tab, or from the radial menu.
+
+When it's on:
+
+* Track titles, artwork and URLs are hidden in the panel
+* The DJ audio is **muted locally**, so your recording carries no copyrighted audio
+* Soundboard one-shots are suppressed locally too
+
+Nobody else is affected — it changes nothing about what's actually playing.
+
+<Info>
+  Masking happens when the panel draws, not in the data. Saving a playlist while streamer mode is on still writes the real track titles.
+</Info>
+
+## The radial menu
+
+Standing at a booth adds an `ox_lib` radial submenu with entries for opening the panel, skipping the track, stopping the music and toggling streamer mode.

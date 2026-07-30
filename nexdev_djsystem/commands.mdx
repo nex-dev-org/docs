@@ -1,0 +1,74 @@
+---
+title: "Commands"
+description: "Every command in the script, split by who can run it."
+---
+
+Every command in the script, split by who can run it.
+
+## Player commands
+
+| Command | What it does |
+| --- | --- |
+| `/dj` | Open the panel at the nearest booth, or close it if it's open. Set `Config.Command` to `false` to register nothing. |
+| **F7** | The same toggle. Set `Config.OpenKey` to `false` to register no keybind. |
+| `/djstreamer` | Toggle [streamer mode](/nexdev_djsystem/usage#streamer-mode). |
+
+The keybind is registered through `ox_lib`, so players can rebind it in the FiveM key mapping settings. `/dj` always works regardless of what they've rebound it to.
+
+Standing at a booth also adds an `ox_lib` radial submenu, with entries for opening the panel, skipping the track, stopping the music and toggling streamer mode.
+
+## Creator commands
+
+All require `nexdev_djsystem.creator` or `nexdev_djsystem.admin`, enforced on the server when the save or delete actually fires.
+
+| Command | What it does |
+| --- | --- |
+| `/djcreate` | Build a new booth from scratch. |
+| `/djedit [id]` | Edit an existing booth. Omit the ID for a picker. |
+| `/djdelete [id]` | Delete a database booth. Omit the ID for a picker. |
+| `/djcreator` | Root menu with all three. |
+
+See [Location creator](/nexdev_djsystem/location-creator).
+
+## Admin commands
+
+These require `nexdev_djsystem.admin` and are **invisible to anyone who doesn't hold it**. All of them also work from the server console.
+
+| Command | What it does |
+| --- | --- |
+| `/djstop <locationId>` | Force stop playback at a booth and release the DJ claim. |
+| `/djreload` | Reload booths from the database. |
+| `/djadmin list` | List every booth: source (config or database), current DJ, listener count, session count and current track. |
+| `/djadmin stop <locationId>` | Same as `/djstop`. |
+| `/djadmin kick <serverId>` | Close every DJ session that player holds and release any claim. |
+
+<Info>
+  `/djadmin list` writes the full listing to the **server console**. A player running it in-game gets the headline only. It's the fastest way to see what's actually playing across the map.
+</Info>
+
+## Debug commands
+
+| Command | What it does |
+| --- | --- |
+| `/djaudiodebug` | Prints the positional audio solver's state to the player's own console — clock offset, energy, volume, mute and streamer flags, and per-booth distance, gain and position. |
+
+<Warning>
+  `/djaudiodebug` only exists when `Config.Debug = true`. A live server never carries it.
+</Warning>
+
+## Granting access
+
+```cfg
+add_ace group.admin nexdev_djsystem.admin allow
+add_ace group.admin nexdev_djsystem.creator allow
+```
+
+Framework admin groups work too — `Config.Permissions.adminGroups` defaults to `{ 'admin', 'superadmin' }`. See [Permissions](/nexdev_djsystem/permissions).
+
+## Exports
+
+**`nexdev_djsystem` registers no exports**, on either side.
+
+That's deliberate. An export is an unauthenticated entry point into authoritative state, and every operation here has to run through the permission and proximity checks with a real player behind it.
+
+If you need to stop a booth from your own tooling, use `/djstop` from the server console.

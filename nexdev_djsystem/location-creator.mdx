@@ -1,0 +1,107 @@
+---
+title: "Location creator"
+description: "Build a whole booth in-game with /djcreate — ghost-prop placement, sound points with live radius rings, effect emitters, audio, permissions, lighting and a blip."
+---
+
+`/djcreate` builds a whole booth in-game, without touching a config file. It's the fastest way to add a venue, and it writes the same shape documented in [Booth locations](/nexdev_djsystem/locations).
+
+Requires `nexdev_djsystem.creator` or `nexdev_djsystem.admin`. See [Permissions](/nexdev_djsystem/permissions).
+
+## The wizard
+
+Ten steps, in order.
+
+| Step | What you do |
+| --- | --- |
+| 1. Identity | Booth ID and display name. |
+| 2. Anchor | Place the booth in the world. |
+| 3. Booth prop | Pick a prop, or choose no prop. |
+| 4. Sound points | Place each audible zone and size it. |
+| 5. Effect emitters | Place lights, lasers, smoke and sparks. |
+| 6. Audio | Falloff curve, range, volumes, muffle, indoor boost. |
+| 7. Permissions | Access mode, jobs, gangs, ACE, identifiers, per-action tiers. |
+| 8. Lighting | Pick one of the eight presets, or keep the current rig. |
+| 9. Blip | Enabled, sprite, colour, scale. |
+| 10. Confirm | A summary, then save. |
+
+## Placement controls
+
+**Step 2 — anchor.** A ghost prop hangs off the gameplay camera.
+
+| Input | Does |
+| --- | --- |
+| **W** / **S** | Height |
+| **Q** / **E** | Heading |
+| **Scroll** | Reach — push it further away or pull it closer |
+| **G** | Snap to ground |
+| **Left Shift** | Hold for coarse steps |
+| **Enter** | Confirm |
+| **Backspace** | Cancel |
+
+**Step 3 — booth prop.** A picker over the configured prop list. The ghost respawns on every selection, so you see each prop land before you commit. **No prop** keeps the interaction without spawning anything, for MLOs that already contain a booth.
+
+**Step 4 — sound points.**
+
+| Input | Does |
+| --- | --- |
+| **E** | Add a point where you're standing |
+| **Del** | Remove the nearest point |
+| **Scroll** | Resize the highlighted point |
+| **Enter** | Finish |
+
+Each point draws its audible radius as a disc on the ground, so you can walk the venue and see exactly where the music reaches.
+
+**Step 5 — effect emitters.** The same loop, plus **Tab** to cycle the emitter type (light, laser, smoke, spark, any). Each emitter draws a heading indicator so you can see which way a beam will sweep.
+
+<Info>
+  Place sound points by walking to where you want them and pressing **E**. You're standing in the room — trust your ears over the numbers.
+</Info>
+
+## Editing an existing booth
+
+| Command | Does |
+| --- | --- |
+| `/djedit [id]` | Opens the same steps individually from a menu. Omit the ID for a picker. |
+| `/djdelete [id]` | Deletes a database booth. Omit the ID for a picker. |
+| `/djcreator` | Root menu with all three. |
+
+With `ox_target`, admins also get an **edit location** option directly on a booth prop.
+
+## Two things worth knowing
+
+**Editing a config booth is allowed.** Saving writes a database copy that overrides the file entry from then on. The wizard tells you when this is what you're about to do. Delete the database row to fall back to the config entry.
+
+<Warning>
+  The editor **cannot pre-fill jobs, gangs, identifier lists or the ACE principal** for an existing booth. Those four fields are server-side access control and are stripped from the booth list before it ever reaches a client — so the dialog opens blank, and **anything left blank is saved blank**.
+
+  The access mode and the per-action tiers do survive. If you're editing a job-gated booth, re-enter the job list before you save, or you'll clear it.
+</Warning>
+
+## Naming
+
+The creator pre-fills `nexdev_djsystem.<booth id>` as the ACE principal for a new booth, which keeps naming consistent with the shipped ones. You don't have to use it — but if you do, granting access is one line in `server.cfg`:
+
+```cfg
+add_ace group.eventteam nexdev_djsystem.my_club allow
+```
+
+## What the creator can't bypass
+
+Everything the creator does is convenience. Saving and deleting are both re-checked on the server against your actual permissions, and the booth is re-validated against the same rules a config booth goes through.
+
+A player who bypasses the client-side checks reaches exactly the same refusal. An invalid booth — a bad permission mode, too many sound points, a radius over the cap — is rejected outright rather than quietly corrected, so a typo fails loudly instead of publishing a broken venue.
+
+## Limits
+
+| Limit | Value |
+| --- | --- |
+| Database booths | 100 |
+| Sound points per booth | 12 |
+| Effect emitters per booth | 24 |
+| Lights per rig | 12 |
+| Lasers per rig | 16 |
+| Maximum audible radius | 120 m |
+| Booth ID | 3–48 characters, lowercase letters, digits, `_` and `-` |
+| Booth label | 64 characters |
+
+Config booths are not deletable in-game — remove them from `config/locations.lua` instead.
