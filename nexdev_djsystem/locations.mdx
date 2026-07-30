@@ -1,11 +1,11 @@
 ---
 title: "Booth locations"
-description: "Four booths ship configured out of the box. Add your own in config/locations.lua, or build them in-game with /djcreate."
+description: "Four booths ship configured out of the box. Add your own in config/locations.lua, or build them in the in-game booth manager."
 ---
 
 Four booths ship configured out of the box — the Vanilla Unicorn, Bahama Mamas West, the After Hours nightclub interior and a Vespucci Beach festival stage. They're examples. Delete the ones you don't want.
 
-You can add booths two ways: edit `config/locations.lua`, or build them in-game with [`/djcreate`](/nexdev_djsystem/location-creator). The in-game route is easier and is what most people use — this page covers the config shape, which is also what the creator writes.
+You can add booths two ways: edit `config/locations.lua`, or build them in the [booth manager](/nexdev_djsystem/location-creator). The in-game route is easier and is what most people use — this page covers the config shape, which is also what the manager writes.
 
 ## The shape
 
@@ -114,7 +114,7 @@ Up to 24 per booth, capped at 12 lights and 16 lasers per rig. Each emitter carr
 Set `booth.spawn = false` for an MLO that already contains a DJ booth. The interaction still registers — the script places a box zone at the anchor instead of attaching to a prop.
 
 <Warning>
-  With no prop there's no entity to target, so the anchor has to be somewhere reachable. If it's a metre inside geometry, the zone is unreachable. Nudge it with `/djedit`.
+  With no prop there's no entity to target, so the anchor has to be somewhere reachable. If it's a metre inside geometry, the zone is unreachable. Nudge it in the booth manager.
 </Warning>
 
 ## Per-booth capability
@@ -127,4 +127,4 @@ Set `booth.spawn = false` for an MLO that already contains a DJ booth. The inter
 
 ## Reloading
 
-Booths added to `config/locations.lua` need a resource restart. Booths in the database can be reloaded live with `/djreload`, and edits made through `/djedit` push to everyone immediately.
+Booths added to `config/locations.lua` need a resource restart. Booths in the database can be reloaded live with `/djreload`, and edits saved in the booth manager push to everyone immediately.

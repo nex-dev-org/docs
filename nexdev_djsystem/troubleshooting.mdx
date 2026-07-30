@@ -64,7 +64,7 @@ Only relevant when `Config.AudioBackend` resolves to `xsound`.
 | Is `ox_target` started? | With `Config.UseTarget = true` but `ox_target` not running, you get a text prompt on **E** instead. If that's what you're seeing, this is why. |
 | `Config.UseTarget = false` | Forces that same fallback deliberately. |
 | Distance | `Config.TargetDistance` defaults to 2.0 m. You have to be close. |
-| `booth.spawn = false` | With no prop there's no entity to target, so a box zone is registered at the anchor instead. If the anchor is inside geometry, the zone is unreachable — nudge it with `/djedit`. |
+| `booth.spawn = false` | With no prop there's no entity to target, so a box zone is registered at the anchor instead. If the anchor is inside geometry, the zone is unreachable — nudge it in the booth manager. |
 | The prop failed to stream | A model name that isn't on the client can't spawn. Check it against `Config.BoothModels` and turn on `Config.Debug`. |
 | Missing options | **Stop the music** only appears when something is playing and you may control it. **Edit location** only appears for admins. **Open the DJ panel** is always registered. |
 
@@ -75,7 +75,7 @@ Only relevant when `Config.AudioBackend` resolves to `xsound`.
 | A booth I added to the config didn't appear | Almost always an invalid field. An unknown permission mode rejects the whole booth on purpose — check the server console for the reason. Config changes also need a resource restart. |
 | No booths at all | `Config.DefaultLocations` is empty and the database has no rows. Run `/djadmin list` and read the server console. |
 | An edit didn't reach players | It should be immediate. If it wasn't, run `/djreload`. |
-| I edited a job-gated booth and now anyone can DJ | The editor can't pre-fill jobs, gangs, identifiers or the ACE principal, and **anything left blank is saved blank**. Re-enter them and save again. See [Location creator](/nexdev_djsystem/location-creator). |
+| I edited a job-gated booth and now anyone can DJ | The manager can not pre-fill jobs, gangs, identifiers or the ACE principal, and **anything left blank is saved blank**. Re-enter them and save again. See [Booth manager](/nexdev_djsystem/location-creator). |
 | I deleted a database booth and the old one came back | That's correct. A database booth overrides a config booth with the same ID — deleting it restores the config entry. |
 | Config booth won't delete in-game | Config booths aren't deletable in-game by design. Remove it from `config/locations.lua`. |
 
@@ -100,7 +100,7 @@ Please include:
 3. Whether it's a fresh install or after a config change.
 4. Server console output filtered for `[nexdev_djsystem]` from when the issue happens.
 5. F8 console output filtered for `[nexdev_djsystem]`.
-6. Whether the booth came from `config/locations.lua` or `/djcreate`.
+6. Whether the booth came from `config/locations.lua` or the booth manager.
 7. For audio issues: a screenshot with `Config.Debug = true` showing the radius rings.
 
 See [Support & contact](/general/support) for how to reach us.

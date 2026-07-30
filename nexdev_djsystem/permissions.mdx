@@ -10,7 +10,7 @@ There are two global ACE objects, and then a two-layer system per booth. Everyth
 | ACE object | Grants |
 | --- | --- |
 | `nexdev_djsystem.admin` | Everything, everywhere. Bypasses every per-booth rule, can delete any database booth, and is required by `/djstop`, `/djreload` and `/djadmin`. |
-| `nexdev_djsystem.creator` | The in-game location creator and the ability to save booths. Admins have it implicitly. |
+| `nexdev_djsystem.creator` | The in-game booth manager and the ability to save booths. Admins have it implicitly. |
 
 Add them to `server.cfg`:
 
@@ -18,7 +18,7 @@ Add them to `server.cfg`:
 ## Full control of the DJ system
 add_ace group.admin nexdev_djsystem.admin allow
 
-## The in-game location creator (/djcreate, /djedit, /djdelete)
+## The in-game booth manager
 add_ace group.admin nexdev_djsystem.creator allow
 ```
 
