@@ -17,7 +17,7 @@ Every option is documented inline in the config files. This page is the map of w
 | Key | Default | Purpose |
 | --- | --- | --- |
 | `Config.Debug` | `false` | Verbose console output plus in-world debug rings for sound points and emitters. Leave off in production. |
-| `Config.Locale` | `'en'` | Must match a file in `locales/`. Falls back to English automatically. |
+| `Config.Locale` | `'en'` | Language for every string. Must match a file in `locales/`, or `'auto'`. See [Locales](#locales). |
 | `Config.Framework` | `'auto'` | `auto`, `esx`, `qb`, `qbx`, `ox` or `standalone`. |
 | `Config.OpenKey` | `'F7'` | Default key to open the panel, or `false` to register none. Players can rebind it. |
 | `Config.Command` | `'dj'` | Chat command, or `false` to register none. |
@@ -157,4 +157,22 @@ If `ox_inventory` isn't started, the item is skipped with a console warning rath
 
 ## Locales
 
-`locales/en.json` holds every string the script can display, selected by `Config.Locale`. Every string also has a hard-coded English fallback, so an incomplete or missing locale file degrades a label and never breaks a feature.
+`locales/en.json` holds every string the script can display, as flat dotted keys. `Config.Locale` picks the file — `'fr'` loads `locales/fr.json`. Only English ships.
+
+### Adding a translation
+
+1. Copy `locales/en.json` to `locales/<language>.json`.
+2. Translate the values. Leave the keys alone.
+3. Set `Config.Locale` to that name and restart.
+
+English is always loaded as the base and your file is merged over the top, so **a partial translation is fine** — anything you haven't translated falls back to English rather than showing a blank or a raw key. You can translate the strings players see most and leave the rest.
+
+<Info>
+  Set `Config.Locale = 'auto'` to use ox_lib's language instead: the `ox:locale` convar on the server, and each player's own ox_lib language setting on the client. That's the only way to give different players different languages — `Config.Locale` is server-wide.
+</Info>
+
+A missing, unreadable or malformed file logs **one** warning at startup and falls back to English. Every string also has a hard-coded English fallback in the code, so even a completely absent `locales/` folder degrades labels and never breaks a feature.
+
+<Warning>
+  Placeholders like `%s` carry values into the string — a track name, a count, a location. Keep them in your translation, in the same order.
+</Warning>
