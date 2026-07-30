@@ -18,6 +18,21 @@ Work down this list in order.
 5. **The audible-range slider.** It scales every radius proportionally. If a DJ dragged it to the minimum, the whole rig shrank.
 6. **A sealed vehicle** applies `vehicleMuffle` — as low as `0.2` on some shipped booths. Get out and check.
 7. **Windows audio.** FiveM must not be muted in the volume mixer, and the game window generally has to have had focus at least once.
+8. **Which engine is running?** Turn on `Config.Debug` and run `/djaudiodebug`. The output starts with the backend name. If it says `xsound` and you expected the built-in engine, or the reverse, see [Audio backend](/nexdev_djsystem/configuration#audio-backend).
+
+## The xsound backend
+
+Only relevant when `Config.AudioBackend` resolves to `xsound`.
+
+| Problem | Fix |
+| --- | --- |
+| Everything is silent, but the panel says a track is playing | Confirm `xsound` is actually started. With `Config.AudioBackend = 'xsound'` and the resource missing, the server console logs a warning at boot and falls back — check for it. |
+| Two tracks playing at once | Both engines are live. This should be impossible; restart the resource and report it. |
+| Music doesn't fade with distance, it just cuts | `Config.XSound.spatial = true` hands the falloff to xsound and `Distance` is set from the booth's audible radius. If a booth has a very small radius the drop-off is abrupt by definition — widen it, or set `spatial = false` to use this script's own curve. |
+| Tracks never advance to the next one | The duration has to be readable before the queue can auto-advance. Live streams never report one. Skip manually. |
+| A track starts from the beginning instead of mid-song | The seek is applied once the stream actually starts. A slow stream can exceed `Config.XSound.startTimeout` — raise it. |
+| The lights pulse but don't match the music | Expected. xsound exposes no analyser, so the beat is synthesised at `Config.XSound.beatBpm`. |
+| Restarting `xsound` leaves a booth silent | Handles are dropped when `xsound` stops and the track reloads on the next solve. If it doesn't, walk out of range and back in. |
 
 ## YouTube is not loading
 

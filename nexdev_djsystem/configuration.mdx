@@ -57,6 +57,35 @@ What actually changes per framework:
 
 The panel re-fetches booths and permissions after a character switch or job change, so neither needs a reconnect.
 
+## Audio backend
+
+Two engines can play the audio. Both are driven by the same authoritative server state — the queue, permissions, sync clock and every value below behave identically either way. Only the playback layer changes.
+
+| `Config.AudioBackend` | Behaviour |
+| --- | --- |
+| `'auto'` | Use `xsound` when that resource is running, otherwise the built-in engine. This is the default. |
+| `'xsound'` | Always use `xsound`. Logs a warning and falls back if it isn't running. |
+| `'nui'` | Always use the built-in engine, even if `xsound` is available. |
+
+`Config.XSound` tunes the xsound path:
+
+| Key | Default | Purpose |
+| --- | --- | --- |
+| `resource` | `'xsound'` | Resource name to talk to. Change only if you renamed it. |
+| `spatial` | `true` | `true` lets xsound position the sound and apply its own distance falloff. `false` plays it flat and applies this script's own gain instead. |
+| `startTimeout` | `10000` | Milliseconds to wait for a track to actually start before giving up on seeking it to the server's play position. |
+| `beatBpm` | `120` | Tempo for the synthesised beat signal that drives the lights. `0` leaves them static. |
+
+<Info>
+  `spatial = true` gives you real stereo positioning, but the falloff curve is xsound's rather than the one set in `Config.Audio.defaultFalloff`. Set `spatial = false` if you want the three curves, multi-sound-point "loudest wins" and per-booth tuning to behave exactly as documented below — at the cost of stereo panning.
+</Info>
+
+<Warning>
+  Beat-reactive lighting is real analysis only on the built-in engine with direct media. On the xsound backend there is no analyser signal at all, so the pulse is synthesised at `beatBpm` for every track. The lights still move; they aren't following the music.
+</Warning>
+
+Switching backends needs a resource restart. Starting `xsound` while the server is already running is picked up automatically — anything currently playing is stopped first so the two engines never overlap.
+
 ## Audio
 
 `Config.Audio` sets the defaults every booth inherits unless it overrides them.
