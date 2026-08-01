@@ -9,8 +9,8 @@
   },
   "favicon": "/favicon.svg",
   "logo": {
-    "light": "/logo/nex-black.png",
-    "dark": "/logo/nex-logo.png"
+    "light": "/logo/nexdev-black.png",
+    "dark": "/logo/nexdev-logo.png"
   },
   "navigation": {
     "pages": [

@@ -8,16 +8,16 @@
 
 ## Structure
 
-- One folder per resource (e.g. `nex-garage/`, `nex-queue/`), each with an
+- One folder per resource (e.g. `nexdev_garages/`, `nexdev_queue/`), each with an
   `overview` page plus pages like `installation`, `configuration`,
   `troubleshooting`.
 - Shared pages live under `general/`; release notes under `changelog/`.
 - Internal links are root-relative and omit the file extension
-  (e.g. `/nex-garage/installation`).
+  (e.g. `/nexdev_garages/installation`).
 
 ## Terminology
 
-- Refer to products by their full name: "NEX Garage", "NEX Queue", etc.
+- Refer to products by their full name: "NEX.dev Garage", "NEX.dev Queue", etc.
 - "Resource" or "script" for a FiveM resource; "framework" for QBCore / Qbox / ESX.
 
 ## Style preferences
@@ -47,4 +47,4 @@ does and how to use it — never how it is built.**
 ## Branding
 
 - Colors are black (`#000000`) and white (`#FFFFFF`).
-- Logos: `logo/nex-black.png` (light mode), `logo/nex-logo.png` (dark mode).
+- Logos: `logo/nexdev-black.png` (light mode), `logo/nexdev-logo.png` (dark mode).

@@ -1,13 +1,13 @@
 ---
 title: "Troubleshooting"
-description: "Fixes for common NEX Loading Screen issues."
+description: "Fixes for common NEX.dev Loading Screen issues."
 ---
 
 | Problem | Fix |
 |---------|-----|
 | Old loading screen still appears | Another loading-screen resource is still ensured. Only one can be active — remove or comment out the old one in `server.cfg` and restart the server. |
 | Loading screen is blank / no UI | Resource didn't start. From F8: `lua print(GetResourceState('nexdev_loadingscreen'))` should print `started`. If not, fix `server.cfg` and restart. Also check the server console for boot errors. |
-| Player count / uptime never updates from the placeholder | The stats panel is fed by `nex:stats` from `server.lua`. Confirm the resource is started server-side and `Config.Stats.enabled = true`. The first push can take up to `Config.Stats.poll` ms (default 5s). |
+| Player count / uptime never updates from the placeholder | The stats panel is fed by `nexdev_loadingscreen:stats` from `server.lua`. Confirm the resource is started server-side and `Config.Stats.enabled = true`. The first push can take up to `Config.Stats.poll` ms (default 5s). |
 | Music doesn't play | Browsers (and FiveM's NUI) block audio until the user interacts. Tracks autoplay where possible, but if a player joins on a muted device it will look silent. Files must exist at the path in `Config.Songs[].song` — paths are relative to `html/`. |
 | A song shows "no cover art" | The `image` path is wrong or the file is missing. Drop the cover under `html/assets/images/` and reference it as `./assets/images/name.png`. |
 | Video background doesn't play | If using a remote URL, make sure it's a direct `.mp4` link (not an embed/HTML page) and the host returns CORS-friendly headers. Local `./assets/videos/foo.mp4` always works. |

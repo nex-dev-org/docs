@@ -12,7 +12,7 @@ name: Discord activity log
 # organization secrets or variables at all.
 #   secret DISCORD_WEBHOOK_URL  — the raw Discord webhook URL
 #   var    DISCORD_THREAD_ID    — optional, forum thread to post into
-#   var    EMBED_COLOR          — optional, brand accent (defaults to NEX red)
+#   var    EMBED_COLOR          — optional, brand accent (defaults to NEX.dev red)
 #
 # The job never checks out the repository and holds no GITHUB_TOKEN
 # permissions, which is what makes `pull_request_target` safe here: it only
