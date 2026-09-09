@@ -17,9 +17,11 @@ description: "How to install NEX.dev DJ System on your FiveM server."
 
 A framework is **not** required. On a standalone server, jobs and gangs resolve empty and access control falls back to ACE permissions and identifier lists.
 
-<Info>
+<Callout type="info">
+
   `ox_target` and `ox_inventory` are deliberately **not** listed as hard dependencies, so a server that uses neither still boots cleanly.
-</Info>
+
+</Callout>
 
 ## Steps
 
@@ -50,9 +52,11 @@ A framework is **not** required. On a standalone server, jobs and gangs resolve 
 
 That's it — the four shipped booths appear on the map.
 
-<Warning>
+<Callout type="warn">
+
   Step 5 is not optional if you want the soundboard. Every shipped clip URL is a placeholder and will silently do nothing until you point it at real files you host.
-</Warning>
+
+</Callout>
 
 ## The database
 
@@ -93,9 +97,11 @@ The webhook URL is **not** a config key, because `config/config.lua` is readable
 set nexdev_djsystem_webhook "https://discord.com/api/webhooks/..."
 ```
 
-<Danger>
+<Callout type="error">
+
   Use `set`, never `setr`. `setr` replicates the value to every client, which leaks your webhook URL to anyone connected.
-</Danger>
+
+</Callout>
 
 Leave it unset to disable webhook logging entirely.
 

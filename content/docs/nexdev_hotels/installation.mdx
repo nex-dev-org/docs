@@ -48,9 +48,11 @@ mysql -u <user> -p <database> < resources/[nex]/nexdev_hotels/imports/01_opium_n
 | `02_richards_cortez_motel.sql` | Richards Cortez Motel | 24 | [Richards Maps — Cortez Hotel](https://richards-maps-for-fivem.tebex.io/package/5921145) |
 | `03_v_hotel.sql` | V Hotel | 3 | [tstudio3d.com — V Hotel](https://shop.tstudio3d.com/package/5986945) |
 
-<Warning>
+<Callout type="warn">
+
   You need to actually own and stream the matching MLO/IPL on your server. The SQL only sets up the hotel data — it doesn't ship the interior itself. Players will fall through the map if the interior isn't loaded.
-</Warning>
+
+</Callout>
 
 You can run any import twice — it won't create duplicates.
 

@@ -50,9 +50,11 @@ The camera flies through the world with `WASD` (plus `Q`/`Z` for up/down); your 
 
 Press `F` at any time to recenter — the camera snaps back to orbit behind your character at the default distance.
 
-<Info>
+<Callout type="info">
+
 Hold **Right Mouse** to grab the view and look around in either mode. While it's held the cursor is captured by the game; release it to get the cursor back for the panel.
-</Info>
+
+</Callout>
 
 ## The panel
 
@@ -72,6 +74,8 @@ You can move at most `Config.MaxDistance` metres (default `5.0`) from where you 
 * **Confirm (`G`)** — locks the position in place. The scripted camera drops back to gameplay, the panel hides, and the anchor is networked so other players see you where you placed yourself. You stay locked until you press `X`, enter a vehicle, or die. Run `/animpos` again to unlock and keep editing from that spot.
 * **Cancel (`X`)** — ends the session and teleports you back to your starting point.
 
-<Warning>
+<Callout type="warn">
+
 Cancel always returns you to the start on purpose: the placed spot was chosen without collision, so releasing you there could drop you through the map. If you want to stay where you placed yourself, use **Confirm**.
-</Warning>
+
+</Callout>

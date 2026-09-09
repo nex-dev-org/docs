@@ -5,9 +5,11 @@ description: "Twenty one-shot SFX layered over the music. The shipped URLs are p
 
 The soundboard plays one-shot SFX **over** the music, not instead of it. Twenty entries ship across four categories: hype, transitions, effects and voice.
 
-<Danger>
+<Callout type="error">
+
   The shipped clips point at `https://cdn.yourserver.com/...`, which resolves to nothing. **Replace every URL in `config/soundboard.lua` before going live**, or the soundboard silently does nothing.
-</Danger>
+
+</Callout>
 
 ## An entry
 
@@ -56,9 +58,11 @@ To gate it rather than disable it, use the `soundboard` action tier instead. See
 
 Clients send a key. The server resolves it against your config, checks the booth has the soundboard enabled, checks the cooldown, then broadcasts the key to everyone in range.
 
-<Info>
+<Callout type="info">
+
   The panel never receives your URL list. It only ever gets the key, label, icon and category — so your CDN paths aren't exposed to players.
-</Info>
+
+</Callout>
 
 Streamer mode suppresses soundboard one-shots locally, along with the music.
 

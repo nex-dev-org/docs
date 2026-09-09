@@ -7,9 +7,11 @@ Build and edit booths in the in-game booth manager. Run `/djbooths`.
 
 Requires `nexdev_djsystem.creator` or `nexdev_djsystem.admin`. See [Permissions](/nexdev_djsystem/permissions).
 
-<Info>
+<Callout type="info">
+
   Everything the manager writes is the same shape you can hand-write in `config/locations.lua`. See [Booth locations](/nexdev_djsystem/locations) for what each field means.
-</Info>
+
+</Callout>
 
 ## The list
 
@@ -37,9 +39,11 @@ Anywhere you see **Add from my position** or a placement button, the panel hands
 | Sound points | Each audible zone. |
 | Effect emitters | Each light, laser, smoke or spark source. |
 
-<Info>
+<Callout type="info">
+
   Walk to where you want it and confirm. You're standing in the room — trust your ears and eyes over the coordinates.
-</Info>
+
+</Callout>
 
 Pick **no prop** for an MLO that already contains a DJ booth. The interaction still registers; a box zone is placed at the anchor instead.
 
@@ -60,11 +64,13 @@ Sound points are listed underneath with their own radius each, so a big main flo
 
 Access mode, job and gang lists, identifier list, ACE principal, and the per-action tiers. See [Permissions](/nexdev_djsystem/permissions) for what each mode and tier means.
 
-<Warning>
+<Callout type="warn">
+
   The job, gang, identifier and ACE fields are **server-side access control** and are stripped from the booth list before it reaches any client. The manager cannot show you what an existing booth has — those fields open blank, and **anything left blank is saved blank**.
 
   If you're editing a job-gated booth, re-enter the job list before you save, or you'll clear it. The access mode and the per-action tiers do survive.
-</Warning>
+
+</Callout>
 
 ## Effects
 

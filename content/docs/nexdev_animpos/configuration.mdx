@@ -17,9 +17,11 @@ Config.CommandSuggestion = "Move your character"
 | `Config.Command` | Chat command that toggles positioning mode. Lowercase, no leading slash. | `"animpos"` |
 | `Config.CommandSuggestion` | Hint text shown beside the command in the chat suggestion list. | `"Move your character"` |
 
-<Info>
+<Callout type="info">
+
 The command is registered unrestricted — every player can use it. There is no ACE gate in the resource itself.
-</Info>
+
+</Callout>
 
 ## Controls
 
@@ -50,9 +52,11 @@ Config.Keybinds = {
 
 These two are registered through `ox_lib`, so players can remap them in **Settings → Key Bindings** under the FiveM category (they appear as `animpos_camtoggle` and `animpos_recenter`).
 
-<Warning>
+<Callout type="warn">
+
 `ox_lib` keybind defaults only apply the first time a player joins. Changing `Config.Keybinds` later won't move the key for players who already have the bind saved — they need to remap it themselves in **Settings → Key Bindings**.
-</Warning>
+
+</Callout>
 
 ## Movement
 
@@ -159,6 +163,8 @@ Config.UIPosition = "center-right"
 | `Config.UI.scale` | Root scale of the whole UI. Bump it for 1440p+, lower it for 1080p. | `1.0` |
 | `Config.UIPosition` | Which corner/edge the control card sits in. One of `"top-left"`, `"top-center"`, `"top-right"`, `"center-left"`, `"center"`, `"center-right"`, `"bottom-left"`, `"bottom-center"`, `"bottom-right"`. | `"center-right"` |
 
-<Info>
+<Callout type="info">
+
 `Config.UIPosition` only moves the control card. The controls/keybind list is always top-left.
-</Info>
+
+</Callout>

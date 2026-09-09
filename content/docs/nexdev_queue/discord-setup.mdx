@@ -25,9 +25,11 @@ Still on the **Bot** page, scroll down to **Privileged Gateway Intents** and tur
 
 Click **Save Changes**.
 
-<Danger>
+<Callout type="error">
+
   If you skip **Server Members Intent**, the bot will see every player as a non-member of every role — meaning no priority, no tier, and if whitelist is on, no one can join. This is the #1 cause of "everyone is getting kicked" tickets.
-</Danger>
+
+</Callout>
 
 ## 3. Invite the bot to your guild
 
@@ -61,9 +63,11 @@ You'll need:
 | **Channel ID** *(optional)* | Right-click the channel for the live feed → **Copy Channel ID** | `Config.Server.LiveFeedChannelID` |
 | **Role IDs** | Server Settings → **Roles** → right-click each role → **Copy Role ID** | `Config.Tiers`, `Config.Permissions.PriorityLevels`, `Config.Permissions.BypassRoles`, `Config.Whitelist.Roles` |
 
-<Info>
+<Callout type="info">
+
   Role IDs are also visible in **Server Settings → Roles** — hover the **⋯** menu next to a role. Both work.
-</Info>
+
+</Callout>
 
 ## 6. (Optional) Live waitlist channel
 

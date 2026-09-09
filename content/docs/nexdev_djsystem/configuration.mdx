@@ -31,9 +31,11 @@ Every option is documented inline in the config files. This page is the map of w
 | `Config.TargetDistance` | `2.0` | Interaction distance in metres. |
 | `Config.StreamerModeDefault` | `false` | Initial default only — the setting is per player. |
 
-<Info>
+<Callout type="info">
+
   `Config.Debug = true` draws every sound point's audible radius as a ring on the ground. It is by far the fastest way to work out why someone can't hear anything.
-</Info>
+
+</Callout>
 
 ## Framework detection
 
@@ -76,13 +78,17 @@ Two engines can play the audio. Both are driven by the same authoritative server
 | `startTimeout` | `10000` | Milliseconds to wait for a track to actually start before giving up on seeking it to the server's play position. |
 | `beatBpm` | `120` | Tempo for the synthesised beat signal that drives the lights. `0` leaves them static. |
 
-<Info>
-  `spatial = true` gives you real stereo positioning, but the falloff curve is xsound's rather than the one set in `Config.Audio.defaultFalloff`. Set `spatial = false` if you want the three curves, multi-sound-point "loudest wins" and per-booth tuning to behave exactly as documented below — at the cost of stereo panning.
-</Info>
+<Callout type="info">
 
-<Warning>
+  `spatial = true` gives you real stereo positioning, but the falloff curve is xsound's rather than the one set in `Config.Audio.defaultFalloff`. Set `spatial = false` if you want the three curves, multi-sound-point "loudest wins" and per-booth tuning to behave exactly as documented below — at the cost of stereo panning.
+
+</Callout>
+
+<Callout type="warn">
+
   Beat-reactive lighting is real analysis only on the built-in engine with direct media. On the xsound backend there is no analyser signal at all, so the pulse is synthesised at `beatBpm` for every track. The lights still move; they aren't following the music.
-</Warning>
+
+</Callout>
 
 Switching backends needs a resource restart. Starting `xsound` while the server is already running is picked up automatically — anything currently playing is stopped first so the two engines never overlap.
 
@@ -102,9 +108,11 @@ Switching backends needs a resource restart. Starting `xsound` while the server 
 
 Volume for a booth is recomputed continuously as the falloff curve against the loudest sound point you're inside, multiplied by the DJ's master volume, the booth's ceiling, vehicle muffle, indoor boost and the listener's own volume slider — then smoothed so it never pops.
 
-<Info>
+<Callout type="info">
+
   Three faders stack: the DJ's master volume, each listener's personal slider, and the booth's `maxVolume` ceiling. Any of them at zero is silence.
-</Info>
+
+</Callout>
 
 ## Effects
 
@@ -116,9 +124,11 @@ Beat-reactive pulsing is real analysis for direct media. For YouTube it **cannot
 
 `Config.BoothModels` and `Config.SpeakerModels` each offer eight props to the in-game creator. Add your own model names to either list and they show up in the picker.
 
-<Warning>
+<Callout type="warn">
+
   A model that isn't streamed on the client simply won't spawn. The booth interaction still works — you just get no visible prop.
-</Warning>
+
+</Callout>
 
 ## Security limits
 
@@ -135,9 +145,11 @@ Beat-reactive pulsing is real analysis for direct media. For YouTube it **cannot
 | `autoBan` | Off by default, and inert unless you register a ban adapter. |
 | `logToConsole` | Console logging for security events. |
 
-<Danger>
+<Callout type="error">
+
   The Discord webhook URL is **not** in `Config.Security`. It is the server-only `nexdev_djsystem_webhook` convar — see [Installation](/nexdev_djsystem/installation#the-discord-webhook).
-</Danger>
+
+</Callout>
 
 Hard caps enforced on the server regardless of what a client asks for: 100 tracks per queue, 25 playlists per player, 100 tracks per playlist, 100 database booths, 12 sound points and 24 effect emitters per booth, 12 lights and 16 lasers per rig, 120 m maximum audible distance, 3 hours maximum track duration.
 
@@ -151,9 +163,11 @@ Off by default. Turn on `Config.Item.enabled` and, with `ox_inventory` running, 
 
 If `ox_inventory` isn't started, the item is skipped with a console warning rather than erroring.
 
-<Info>
+<Callout type="info">
+
   `Config.Item.boothItem` and `Config.Item.consumeOnPlace` are reserved keys. Nothing reads them in 1.0.0.
-</Info>
+
+</Callout>
 
 ## Locales
 
@@ -167,12 +181,16 @@ If `ox_inventory` isn't started, the item is skipped with a console warning rath
 
 English is always loaded as the base and your file is merged over the top, so **a partial translation is fine** — anything you haven't translated falls back to English rather than showing a blank or a raw key. You can translate the strings players see most and leave the rest.
 
-<Info>
+<Callout type="info">
+
   Set `Config.Locale = 'auto'` to use ox_lib's language instead: the `ox:locale` convar on the server, and each player's own ox_lib language setting on the client. That's the only way to give different players different languages — `Config.Locale` is server-wide.
-</Info>
+
+</Callout>
 
 A missing, unreadable or malformed file logs **one** warning at startup and falls back to English. Every string also has a hard-coded English fallback in the code, so even a completely absent `locales/` folder degrades labels and never breaks a feature.
 
-<Warning>
+<Callout type="warn">
+
   Placeholders like `%s` carry values into the string — a track name, a count, a location. Keep them in your translation, in the same order.
-</Warning>
+
+</Callout>

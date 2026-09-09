@@ -28,9 +28,11 @@ description: "Drag-and-drop install for nexdev_scalemenu — single folder, corr
 
 That's it. Start the server and the menu is ready.
 
-<Warning>
+<Callout type="warn">
+
   `oxmysql` must be started **before** `nexdev_scalemenu`. If it starts after, the table cannot be created and scales will not save or load. Put `ensure oxmysql` first in `server.cfg`.
-</Warning>
+
+</Callout>
 
 ## Database
 
@@ -53,9 +55,11 @@ CREATE TABLE IF NOT EXISTS `nexdev_scalemenu` (
 | `body` | `DECIMAL(5,3)` | Stored width/depth multiplier, default `1.000` |
 | `updated_at` | `TIMESTAMP` | Auto-updated on every write |
 
-<Info>
+<Callout type="info">
+
   A default scale (`1.0 / 1.0`) deletes the player's row rather than storing it, so the table only ever holds players who are actually scaled.
-</Info>
+
+</Callout>
 
 ## Verifying the install
 

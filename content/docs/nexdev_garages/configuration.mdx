@@ -55,11 +55,13 @@ Body text stays neutral so any accent keeps the panels readable.
 
 ## Cinematic garage mode — beta (`config/main.lua`)
 
-<Warning>
+<Callout type="warn">
+
   The cinematic garage is a **beta** feature. It's fully playable, but still
   being polished — if anything behaves oddly on your server, keep
   `enabled = false` and report it to us.
-</Warning>
+
+</Callout>
 
 Prefer an in-world browser over the list menu? Enable the cinematic garage:
 
@@ -155,10 +157,12 @@ set nexdev_garages_webhook_custom_garages  "https://discord.com/api/webhooks/...
 
 Leave a convar unset to disable that category.
 
-<Warning>
+<Callout type="warn">
+
   Use `set`, not `setr` — replicated convars are visible to every client, and
   webhook URLs must stay server-side.
-</Warning>
+
+</Callout>
 
 ## Hooks (`config/hooks-client.lua` / `config/hooks-server.lua`)
 

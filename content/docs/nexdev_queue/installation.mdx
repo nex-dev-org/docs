@@ -31,9 +31,11 @@ Add this **after** anything you want it to load alongside (it has no hard depend
 ensure nexdev_queue
 ```
 
-<Warning>
+<Callout type="warn">
+
   Do **not** also start a second queue resource (e.g. `connectqueue`, `qb-queue`, etc.). Two queues fighting over the same connection deferral will kick everyone.
-</Warning>
+
+</Callout>
 
 ## Step 3 — Set up your Discord bot
 
@@ -77,6 +79,8 @@ If you see errors instead, see [Troubleshooting](/nexdev_queue/troubleshooting).
 
 There is no database to migrate. The in-memory queue snapshot is rebuilt on boot.
 
-<Info>
+<Callout type="info">
+
   `config.lua` is `escrow_ignore`d, so it's always editable and is preserved when you swap the resource — your token and IDs stay where you put them.
-</Info>
+
+</Callout>

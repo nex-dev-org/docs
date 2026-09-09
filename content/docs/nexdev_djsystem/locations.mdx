@@ -60,9 +60,11 @@ Add an entry to `Config.DefaultLocations`. Every field is documented inline in t
 
 Blip sprite and colour IDs are listed in the [FiveM blip reference](https://docs.fivem.net/docs/game-references/blips/).
 
-<Info>
+<Callout type="info">
+
   Config booths are read-only at runtime. A database booth with the same `id` overrides the config entry — and deleting that database row restores the config entry on the next reload.
-</Info>
+
+</Callout>
 
 ## Sound points
 
@@ -81,9 +83,11 @@ You can have up to 12 per booth, and no radius may exceed 120 m.
 
 A sound point can also stream a **speaker prop**, so there's something visible making the noise.
 
-<Warning>
+<Callout type="warn">
+
   The DJ's audible-range slider scales the whole rig proportionally. If someone drags it to the minimum, every radius shrinks with it — which is a very common reason for "the music suddenly went quiet".
-</Warning>
+
+</Callout>
 
 ## Falloff curves
 
@@ -113,9 +117,11 @@ Up to 24 per booth, capped at 12 lights and 16 lasers per rig. Each emitter carr
 
 Set `booth.spawn = false` for an MLO that already contains a DJ booth. The interaction still registers — the script places a box zone at the anchor instead of attaching to a prop.
 
-<Warning>
+<Callout type="warn">
+
   With no prop there's no entity to target, so the anchor has to be somewhere reachable. If it's a metre inside geometry, the zone is unreachable. Nudge it in the booth manager.
-</Warning>
+
+</Callout>
 
 ## Per-booth capability
 

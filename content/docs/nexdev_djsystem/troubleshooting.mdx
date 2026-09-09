@@ -53,9 +53,11 @@ Only relevant when `Config.AudioBackend` resolves to `xsound`.
 4. **Give it a moment after a server start.** The panel retries its initial fetch with a backoff of up to 30 seconds. `Config.Debug = true` prints the attempt count.
 5. **Stuck with a mouse cursor?** Three separate mechanisms release focus — the close button, an ESC watch, and a ten-second watchdog. If all three somehow failed, `restart nexdev_djsystem` always drops focus.
 
-<Warning>
+<Callout type="warn">
+
   If the interface files are missing or damaged, the resource cannot start at all. Re-download the resource from your purchase rather than trying to repair it.
-</Warning>
+
+</Callout>
 
 ## The target option does not show
 
@@ -87,9 +89,11 @@ Only relevant when `Config.AudioBackend` resolves to `xsound`.
 * **`permission:refused`, `proximity:refused`, `rate_limit:refused` or `session:stale` in the console.** These are traces, not punishments — the request was dropped and the player was charged nothing. One line per player per ten seconds. A steady stream of `permission:refused` from one player usually means their job changed while their panel was open; a steady stream of `proximity:refused` means they're standing right on a booth's radius edge.
 * **Someone was kicked for "security".** The console and the audit table record which flag and why. Only one thing raises a strike — a malformed payload that the shipped interface cannot produce. An ordinary player collecting strikes is a bug worth reporting, not a threshold to raise.
 
-<Warning>
+<Callout type="warn">
+
   Read the flag reasons before touching `Config.Security.strikes`. Raising the thresholds hides the symptom of a real problem.
-</Warning>
+
+</Callout>
 
 ## Before opening a support ticket
 

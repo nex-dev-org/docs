@@ -88,9 +88,11 @@ Roles ship as `manager` and `employee` plus the implicit `owner`. Add more in `C
 
 If `Config.Employees.SyncFrameworkJob = true`, hiring also sets the player's framework job and grade (per `Config.Employees.RoleGrades`), and firing reverts them to `Config.Employees.FiredJob`/`FiredGrade`. This lets employees pass job-gated selling checks without you having to manage two systems.
 
-<Info>
+<Callout type="info">
+
   The owner is the player whose identifier is in `nexdev_dealership_settings.owner_identifier`. They're always treated as `owner` role for permission checks — they don't need a row in the employees table.
-</Info>
+
+</Callout>
 
 ## Settings tab
 

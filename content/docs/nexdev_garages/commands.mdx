@@ -20,10 +20,12 @@ respective panels, and `config/features.lua` for the audit log.
 | `/setjobvehicle` / `/deletejobvehicle` | Admins | Convert the current vehicle to/from a job vehicle |
 | `/addgangvehicle` / `/deletegangvehicle` | Admins | Convert the current vehicle to/from a gang vehicle |
 
-<Info>
+<Callout type="info">
+
   Admin checks use ACE permissions — grant the dedicated ACE with
   `add_ace group.admin nexdev_garages.admin allow` (configurable via `adminAce`
   in `config/custom-garages.lua`; the generic `command` ACE still works as a
   fallback), or add your job to the command's `jobRestriction` where
   supported.
-</Info>
+
+</Callout>

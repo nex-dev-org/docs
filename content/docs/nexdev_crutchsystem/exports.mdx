@@ -69,6 +69,8 @@ Only the events you'd reasonably trigger from another resource are listed. Prefe
 | `nexdev_crutchsystem:client:clearForce` | — | `ClearForce` |
 | `nexdev_crutchsystem:client:forceRemove` | — | `RemoveCrutch` |
 
-<Warning>
+<Callout type="warn">
+
   Calling `TriggerClientEvent('nexdev_crutchsystem:client:forceCrutch', src, 600)` will visually equip the crutch on the client, but won't register the player in the server-side tracking tables — `IsPlayerCrutched`, `ListForced`, and `/crutchadmin` won't know about them. Always use the `ForceCrutch` export for force locks initiated outside the resource.
-</Warning>
+
+</Callout>

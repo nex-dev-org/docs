@@ -83,15 +83,19 @@ actions = {
 | `any` | Any **populated** rule above passes. If none of the four are populated, `any` behaves exactly like `open`. |
 | `mixed` | Alias of `any`. |
 
-<Warning>
+<Callout type="warn">
+
   An unknown mode **fails closed**. A typo rejects the whole booth rather than downgrading it, so the booth disappears loudly instead of quietly publishing itself to everybody. Check the server console if a booth you just added didn't show up.
-</Warning>
+
+</Callout>
 
 A global admin passes both layers everywhere.
 
-<Info>
+<Callout type="info">
+
   `soundboard = false` on a booth disables the soundboard there for everyone, **including admins**. It's a capability of the booth, not a permission.
-</Info>
+
+</Callout>
 
 ## The per-booth ACE
 
@@ -129,9 +133,11 @@ When a session opens, the server sends a resolved permission block and pushes an
 
 Every request is re-checked on arrival, so a stale or forged permission block can only ever hide a button, never grant one.
 
-<Info>
+<Callout type="info">
+
   This is why a player whose job changed while their panel was open sees buttons that no longer work. The panel refreshes on a 30-second loop; the server is already correct. Reopening the panel resyncs it immediately.
-</Info>
+
+</Callout>
 
 ## Presence
 

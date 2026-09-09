@@ -15,9 +15,11 @@ Most issues come down to start order, permissions, or Discord setup. Work throug
 
 This is almost always a `oxmysql` start-order problem.
 
-<Warning>
+<Callout type="warn">
+
   `oxmysql` must be started **before** `nexdev_scalemenu`. Put `ensure oxmysql` first in `server.cfg`, before your framework and before this resource.
-</Warning>
+
+</Callout>
 
 - Verify the order in `server.cfg`:
 
@@ -61,9 +63,11 @@ If Discord-based permissions never grant access:
 - Confirm the **role IDs** in `roles` are correct (right-click a role with Developer Mode on, then **Copy Role ID**).
 - Remember roles are cached per player for `cacheSeconds` (default 300, five minutes), so changes can take up to five minutes to take effect.
 
-<Info>
+<Callout type="info">
+
   A player must have a `discord:` identifier (be connected to FiveM through Discord) for role lookup to work at all.
-</Info>
+
+</Callout>
 
 ## A player can't open the menu (gender lock)
 

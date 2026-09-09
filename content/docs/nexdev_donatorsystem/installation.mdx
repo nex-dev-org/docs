@@ -38,9 +38,11 @@ You also need a [Tebex](https://www.tebex.io/) store with at least one currency 
 
 That's the resource installed. Next, wire up your Tebex store — see [Tebex setup](/nexdev_donatorsystem/tebex-setup).
 
-<Info>
+<Callout type="info">
+
   The schema is idempotent. Every restart re-verifies the tables and seeds default categories if any are missing, so you can never end up half-installed. There's no `.sql` file to import.
-</Info>
+
+</Callout>
 
 ## Checking it worked
 

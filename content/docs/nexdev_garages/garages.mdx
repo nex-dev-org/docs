@@ -9,11 +9,13 @@ Static locations live in one file per garage type — `config/public-garages.lua
 `config/garage-defaults.lua`. Every garage and impound name must be **unique**
 across all files.
 
-<Info>
+<Callout type="info">
+
   You can also create and edit garages entirely in-game with
   [`/garagesadmin`](/nexdev_garages/garage-editor) — no config editing or restart
   required.
-</Info>
+
+</Callout>
 
 ## Entry fields
 
@@ -42,11 +44,13 @@ and air garages. Section-level toggles:
 * `interiors` — enables the walk-in showroom ("Go inside")
 * `showBlips` / `uniqueBlips` — blip visibility and naming
 
-<Warning>
+<Callout type="warn">
+
   If you rename the default `Legion Square` garage, also change the
   `garage_id` default in your vehicles table — stored vehicles reference
   garages by name.
-</Warning>
+
+</Callout>
 
 ## Job garages
 
@@ -76,10 +80,12 @@ vehicles = {
 Set `showLiveriesExtrasMenu = true` on the location to let players pick a
 livery and extras before spawning.
 
-<Warning>
+<Callout type="warn">
+
   Plate prefixes generate random suffixes — never configure a prefix that
   could collide with plates already in your database.
-</Warning>
+
+</Callout>
 
 ## Gang garages
 

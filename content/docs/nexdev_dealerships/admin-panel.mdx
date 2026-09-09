@@ -59,9 +59,11 @@ Pick a source (or **Auto** to use the detected framework), preview the merged di
 
 The flow is idempotent: re-importing only adds **new** models, never overwrites your edits.
 
-<Info>
+<Callout type="info">
+
   A bulk-seed SQL file lives at `install/existing.sql` (around 864 stock GTA vehicles). If you'd rather seed from there than from the framework, run it once against your DB before opening the admin panel.
-</Info>
+
+</Callout>
 
 ## Dealerships tab
 
@@ -74,9 +76,11 @@ Per-lot ownership and lifecycle controls.
 | **Manage** | Opens the management dashboard scoped to just this lot — useful for seeding before a handoff. |
 | **Erase Dealership** | Wipes the lot's `nexdev_dealership_settings`, hidden models, display vehicles, employees, stock, and orders. The lot definition in `shared/locations.lua` is untouched and re-creates the row on next interaction. Use this when transferring ownership to a new player or to reset a lot to defaults. |
 
-<Warning>
+<Callout type="warn">
+
   **Erase Dealership** does not refund pending restock orders or active loans. Cancel those from the management dashboard first if you need to.
-</Warning>
+
+</Callout>
 
 ## Catalog sync
 

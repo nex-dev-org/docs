@@ -39,9 +39,11 @@ These require `nexdev_djsystem.admin` and are **invisible to anyone who doesn't 
 | `/djadmin stop <locationId>` | Same as `/djstop`. |
 | `/djadmin kick <serverId>` | Close every DJ session that player holds and release any claim. |
 
-<Info>
+<Callout type="info">
+
   `/djadmin list` writes the full listing to the **server console**. A player running it in-game gets the headline only. It's the fastest way to see what's actually playing across the map.
-</Info>
+
+</Callout>
 
 ## Debug commands
 
@@ -49,9 +51,11 @@ These require `nexdev_djsystem.admin` and are **invisible to anyone who doesn't 
 | --- | --- |
 | `/djaudiodebug` | Prints the positional audio solver's state to the player's own console — clock offset, energy, volume, mute and streamer flags, and per-booth distance, gain and position. |
 
-<Warning>
+<Callout type="warn">
+
   `/djaudiodebug` only exists when `Config.Debug = true`. A live server never carries it.
-</Warning>
+
+</Callout>
 
 ## Granting access
 

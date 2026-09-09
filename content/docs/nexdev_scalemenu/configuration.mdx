@@ -5,9 +5,11 @@ description: "Walk the config.lua table for nexdev_scalemenu — scaling ranges,
 
 `config.lua` returns a single Lua table with every knob in one place. Permissions have their own page — see [Permissions](/nexdev_scalemenu/permissions). This page covers everything else.
 
-<Info>
+<Callout type="info">
+
   `config.lua` is listed under `escrow_ignore`, so you can edit it freely even on an escrow-protected build.
-</Info>
+
+</Callout>
 
 ## Locale
 
@@ -139,9 +141,11 @@ ui = {
 
 Presets are quick height shortcuts. Each has a `name` and a target `height`.
 
-<Info>
+<Callout type="info">
+
   Presets affect **height only**. Applying a preset leaves the body slider untouched, so a player can pick a height preset and still fine-tune build separately.
-</Info>
+
+</Callout>
 
 | Preset | Height |
 | --- | --- |
@@ -174,6 +178,8 @@ The resource ships with `en.json` and `es.json`. `LoadLocale` reads `locales/<co
 }
 ```
 
-<Warning>
+<Callout type="warn">
+
   If the chosen locale file is missing, the resource prints `locale not found` and falls back to empty strings. Match the language code in `LoadLocale` to a file that exists in `locales/`.
-</Warning>
+
+</Callout>
