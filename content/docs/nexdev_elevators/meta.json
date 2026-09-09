@@ -1,0 +1,10 @@
+{
+  "title": "nexdev_elevators",
+  "icon": "ArrowUpDown",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "admin-panel"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "title": "nexdev_uipack",
+  "icon": "Palette",
+  "pages": [
+    "overview",
+    "installation",
+    "troubleshooting"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "nexdev_crutchsystem",
+  "icon": "Accessibility",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "usage",
+    "commands",
+    "exports",
+    "troubleshooting"
+  ]
+}

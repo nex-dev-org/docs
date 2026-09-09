@@ -1,0 +1,14 @@
+{
+  "title": "nexdev_donatorsystem",
+  "icon": "Gift",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "tebex-setup",
+    "admin-panel",
+    "usage",
+    "commands",
+    "troubleshooting"
+  ]
+}

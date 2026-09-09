@@ -1,0 +1,12 @@
+{
+  "title": "nexdev_itemwhitelist",
+  "icon": "Lock",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "admin-menu",
+    "commands",
+    "troubleshooting"
+  ]
+}

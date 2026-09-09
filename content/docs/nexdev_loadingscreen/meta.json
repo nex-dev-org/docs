@@ -1,0 +1,11 @@
+{
+  "title": "nexdev_loadingscreen",
+  "icon": "Image",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "music",
+    "troubleshooting"
+  ]
+}

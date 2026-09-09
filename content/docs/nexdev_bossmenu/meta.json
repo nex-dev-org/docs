@@ -1,0 +1,13 @@
+{
+  "title": "nexdev_bossmenu",
+  "icon": "Briefcase",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "usage",
+    "commands",
+    "custom-frameworks",
+    "troubleshooting"
+  ]
+}

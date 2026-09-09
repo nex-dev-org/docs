@@ -1,0 +1,17 @@
+{
+  "title": "nexdev_garages",
+  "icon": "Warehouse",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "garages",
+    "garage-editor",
+    "private-garages",
+    "impound",
+    "usage",
+    "commands",
+    "integrations",
+    "troubleshooting"
+  ]
+}

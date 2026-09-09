@@ -1,0 +1,13 @@
+{
+  "title": "nexdev_hotels",
+  "icon": "Hotel",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "admin-panel",
+    "usage",
+    "commands",
+    "troubleshooting"
+  ]
+}

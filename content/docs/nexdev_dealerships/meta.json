@@ -1,0 +1,16 @@
+{
+  "title": "nexdev_dealerships",
+  "icon": "Car",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "dealerships",
+    "admin-panel",
+    "management",
+    "usage",
+    "commands",
+    "integrations",
+    "troubleshooting"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "title": "nexdev_djsystem",
+  "icon": "Disc3",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "locations",
+    "location-creator",
+    "permissions",
+    "usage",
+    "soundboard",
+    "commands",
+    "troubleshooting"
+  ]
+}

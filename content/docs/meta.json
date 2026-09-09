@@ -1,0 +1,27 @@
+{
+  "title": "NEX.dev",
+  "pages": [
+    "---Get started---",
+    "index",
+    "...general",
+    "---Scripts---",
+    "nexdev_animpos",
+    "nexdev_bossmenu",
+    "nexdev_crafting",
+    "nexdev_crutchsystem",
+    "nexdev_dealerships",
+    "nexdev_djsystem",
+    "nexdev_donatorsystem",
+    "nexdev_elevators",
+    "nexdev_garages",
+    "nexdev_hotels",
+    "nexdev_itemwhitelist",
+    "nexdev_loadingscreen",
+    "nexdev_queue",
+    "nexdev_scalemenu",
+    "nexdev_uipack",
+    "nexdev_watermark",
+    "---Changelog---",
+    "...changelog"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "title": "nexdev_queue",
+  "icon": "ListOrdered",
+  "pages": [
+    "overview",
+    "installation",
+    "discord-setup",
+    "configuration",
+    "themes",
+    "whitelist-and-priority",
+    "troubleshooting"
+  ]
+}

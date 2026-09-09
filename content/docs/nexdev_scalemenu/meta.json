@@ -1,0 +1,12 @@
+{
+  "title": "nexdev_scalemenu",
+  "icon": "Ruler",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "permissions",
+    "commands",
+    "troubleshooting"
+  ]
+}

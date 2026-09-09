@@ -1,0 +1,13 @@
+{
+  "title": "nexdev_crafting",
+  "icon": "Hammer",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "creator-panel",
+    "usage",
+    "commands",
+    "troubleshooting"
+  ]
+}

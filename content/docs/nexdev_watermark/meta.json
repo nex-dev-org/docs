@@ -1,0 +1,12 @@
+{
+  "title": "nexdev_watermark",
+  "icon": "Stamp",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "usage",
+    "exports",
+    "troubleshooting"
+  ]
+}

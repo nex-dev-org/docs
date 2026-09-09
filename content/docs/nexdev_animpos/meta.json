@@ -1,0 +1,12 @@
+{
+  "title": "nexdev_animpos",
+  "icon": "PersonStanding",
+  "pages": [
+    "overview",
+    "installation",
+    "configuration",
+    "usage",
+    "exports",
+    "troubleshooting"
+  ]
+}
