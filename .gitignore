@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+
+# fumadocs
+.source/
+
+# build & misc
+*.tsbuildinfo
+.vercel
+.env*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# drafts
+drafts/
+*.draft.mdx
