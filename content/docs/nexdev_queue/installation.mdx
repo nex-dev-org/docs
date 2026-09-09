@@ -14,7 +14,7 @@ NEX.dev Queue is a **server-only, drag-and-drop** resource. There is no client U
 
 There is **no framework requirement**. NEX.dev Queue works on QBCore, Qbox, ESX, Ox Core, or a bare-bones FiveM server — it runs entirely server-side and does not touch your framework.
 
-## Step 1 — Drop the resource in
+## Step 1 — Drop the resource in [#step-1-drop-the-resource-in]
 
 1. Unzip the resource so the folder is named exactly `nexdev_queue`.
 2. Place it in your `resources` directory. Most people use:
@@ -23,7 +23,7 @@ There is **no framework requirement**. NEX.dev Queue works on QBCore, Qbox, ESX,
    ```
 3. Make sure the folder name stays `nexdev_queue` — exports are namespaced to it.
 
-## Step 2 — Add it to server.cfg
+## Step 2 — Add it to server.cfg [#step-2-add-it-to-server-cfg]
 
 Add this **after** anything you want it to load alongside (it has no hard dependencies, but loading it late means console output is easier to read):
 
@@ -37,7 +37,7 @@ ensure nexdev_queue
 
 </Callout>
 
-## Step 3 — Set up your Discord bot
+## Step 3 — Set up your Discord bot [#step-3-set-up-your-discord-bot]
 
 This is the bit you can't skip — the queue uses Discord roles to decide priority, tier, whitelist, and bypass. Walk through the full bot setup here:
 
@@ -45,7 +45,7 @@ This is the bit you can't skip — the queue uses Discord roles to decide priori
 
 You'll come back with a bot **token**, your **guild (server) ID**, and (optionally) a **channel ID** for the live waitlist embed.
 
-## Step 4 — Fill in `config.lua`
+## Step 4 — Fill in `config.lua` [#step-4-fill-in-config-lua]
 
 Open `nexdev_queue/config.lua` and paste in the IDs you collected:
 
@@ -61,7 +61,7 @@ Open `nexdev_queue/config.lua` and paste in the IDs you collected:
 
 The full walkthrough is in [Configuration](/nexdev_queue/configuration).
 
-## Step 5 — Restart
+## Step 5 — Restart [#step-5-restart]
 
 Restart the server (or `refresh; ensure nexdev_queue` from the console). On boot you should see something like:
 

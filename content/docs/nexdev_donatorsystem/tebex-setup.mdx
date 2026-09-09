@@ -5,7 +5,7 @@ description: "This is the part that wires real money to in-game currency. Take a
 
 This is the part that wires real money to in-game currency. Take a minute and do it carefully — once it's right, you never need to touch it again.
 
-## Step 1 — Set your Tebex secret
+## Step 1 — Set your Tebex secret [#step-1-set-your-tebex-secret]
 
 The script reads the standard `sv_tebexSecret` convar that Tebex's official FiveM integration uses, so you set it once in `server.cfg` and never touch the config files.
 
@@ -26,7 +26,7 @@ Restart the server. The script picks it up automatically.
 
 </Callout>
 
-## Step 2 — Find each package's ID
+## Step 2 — Find each package's ID [#step-2-find-each-packages-id]
 
 1. Sign in at **[https://creator.tebex.io](https://creator.tebex.io)**.
 2. Left sidebar → **Packages**.
@@ -41,7 +41,7 @@ Restart the server. The script picks it up automatically.
 
 The same ID is shown inside the **Package Information** section at the top of the edit page.
 
-## Step 3 — Map packages to currency
+## Step 3 — Map packages to currency [#step-3-map-packages-to-currency]
 
 Edit `ServerConfig.CoinPackages` in `configs/sv_config.lua`. Each entry is `[package_id] = currency_amount`:
 
@@ -56,7 +56,7 @@ ServerConfig.CoinPackages = {
 
 The key is the **package ID**, not the price. The amount on the right is the in-shop currency the player gets when they redeem.
 
-## Step 4 — Optional fallback rate
+## Step 4 — Optional fallback rate [#step-4-optional-fallback-rate]
 
 If you don't want to list every package, set a flat rate. Anything not in `CoinPackages` will use this:
 
@@ -66,7 +66,7 @@ ServerConfig.CoinPerDollar = 100   -- every $1 spent = 100 currency
 
 Set this to `0` to be strict — any unmapped package will grant zero currency and the redeem will error out cleanly.
 
-## Step 5 — Restart and test
+## Step 5 — Restart and test [#step-5-restart-and-test]
 
 In your server console:
 

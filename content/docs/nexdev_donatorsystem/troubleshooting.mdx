@@ -10,10 +10,10 @@ Most problems show themselves in the **server console** or the **F8 client conso
 | Problem | Fix |
 | --- | --- |
 | `Tebex API returned status 404` | The order ID couldn't be found by Tebex. Double-check it's the full `tbx-xxxxxx-xxxxxx` string, that `sv_tebexSecret` matches the store the player bought from, and that the order has finished processing (give it a minute after checkout). |
-| `Tebex secret not configured (sv_tebexSecret convar)` | You haven't set the secret. Add `sv_tebexSecret "..."` to your `server.cfg` above `ensure nexdev_donatorsystem` and restart. See [Tebex setup](/nexdev_donatorsystem/tebex-setup#step-1--set-your-tebex-secret). |
+| `Tebex secret not configured (sv_tebexSecret convar)` | You haven't set the secret. Add `sv_tebexSecret "..."` to your `server.cfg` above `ensure nexdev_donatorsystem` and restart. See [Tebex setup](/nexdev_donatorsystem/tebex-setup#step-1-set-your-tebex-secret). |
 | `This order has been refunded or charged back` | Working as intended — the buyer reversed payment. They keep nothing. |
 | `This order has already been redeemed` | Each Tebex order can only be redeemed once. If a player insists they didn't, check the `nexdev_donatorsystem_redeems` table — the redeemer's identifier is recorded. |
-| Order redeems for 0 currency | The package ID isn't in `ServerConfig.CoinPackages` and `ServerConfig.CoinPerDollar` is `0`. Either add the package to the map, or set a fallback rate. See [Tebex setup → Step 3](/nexdev_donatorsystem/tebex-setup#step-3--map-packages-to-currency). |
+| Order redeems for 0 currency | The package ID isn't in `ServerConfig.CoinPackages` and `ServerConfig.CoinPerDollar` is `0`. Either add the package to the map, or set a fallback rate. See [Tebex setup → Step 3](/nexdev_donatorsystem/tebex-setup#step-3-map-packages-to-currency). |
 
 ## Admin access
 
