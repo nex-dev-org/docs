@@ -21,3 +21,9 @@ Thumbs.db
 # drafts
 drafts/
 *.draft.mdx
+
+# cloudflare
+.open-next/
+.wrangler/
+.dev.vars
+cloudflare-env.d.ts
